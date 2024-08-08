@@ -40,6 +40,31 @@
   <script src="flutter.js" defer></script>
 </head>
 <body>
+
+  <script>
+    // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDVsO30_Q_pOHrD4F0BHBBb_yTuk31oByI",
+  authDomain: "fyp-daiman.firebaseapp.com",
+  projectId: "fyp-daiman",
+  storageBucket: "fyp-daiman.appspot.com",
+  messagingSenderId: "95968883140",
+  appId: "1:95968883140:web:2aed2205203908b3f3b491",
+  measurementId: "G-ML50B0ZXMH"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+  </script>
+  
   <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
