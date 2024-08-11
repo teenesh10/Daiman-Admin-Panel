@@ -1,3 +1,5 @@
+import 'package:admin_panel/controllers/auth_controller.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class LoginView extends StatelessWidget {
@@ -5,6 +7,7 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authController = Provider.of<AuthController>(context);
     // Determine screen size
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
@@ -49,8 +52,17 @@ class LoginView extends StatelessWidget {
                     height: 100,
                   ),
                   const SizedBox(height: 16.0),
+                  // Error Message
+                  if (authController.errorMessage != null) ...[
+                    Text(
+                      authController.errorMessage!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                    const SizedBox(height: 16.0),
+                  ],
                   // Email Input
                   TextFormField(
+                    controller: authController.emailController,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.email),
                       hintText: 'Email',
@@ -60,6 +72,7 @@ class LoginView extends StatelessWidget {
                   const SizedBox(height: 16.0),
                   // Password Input
                   TextFormField(
+                    controller: authController.passwordController,
                     obscureText: true,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.lock),
@@ -70,23 +83,38 @@ class LoginView extends StatelessWidget {
                   const SizedBox(height: 16.0),
                   // Login Button
                   ElevatedButton(
-                    onPressed: () {
-                      // Handle login logic
-                    },
+                    onPressed: authController.isLoading
+                        ? null
+                        : () async {
+                            final email =
+                                authController.emailController.text.trim();
+                            final password =
+                                authController.passwordController.text.trim();
+
+                            await authController.login(
+                                email, password, context);
+                          },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
                     ),
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(color: Colors.black),
-                    ),
+                    child: authController.isLoading
+                        ? const CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.black),
+                          )
+                        : const Text(
+                            'Login',
+                            style: TextStyle(color: Colors.black),
+                          ),
                   ),
                   const SizedBox(height: 16.0),
                   // Forgot Password Link
                   TextButton(
-                    onPressed: () {
-                      // Handle forgot password
-                    },
+                    onPressed: authController.isLoading
+                        ? null
+                        : () {
+                            // Handle forgot password
+                          },
                     child: const Text(
                       'Forgot Password?',
                       style: TextStyle(color: Colors.black),
