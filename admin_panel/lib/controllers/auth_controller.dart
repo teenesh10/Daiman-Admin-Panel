@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:admin_panel/models/admin.dart';
+import 'package:admin_panel/views/dashboard/dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -58,10 +59,10 @@ class AuthController with ChangeNotifier {
       notifyListeners();
 
       // Redirect to dashboard page upon successful login
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => DashboardView()),
-      // );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const DashboardView()),
+      );
     } on FirebaseAuthException catch (e) {
       // Handle Firebase authentication errors
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
