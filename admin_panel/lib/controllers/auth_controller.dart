@@ -82,6 +82,60 @@ class AuthController with ChangeNotifier {
     }
   }
 
+  // Method to reset password
+  Future<void> resetPassword(String email, BuildContext context) async {
+    try {
+      if (email.isEmpty) {
+        _errorMessage = "Please enter your email address.";
+        notifyListeners();
+        return;
+      }
+
+      _isLoading = true;
+      notifyListeners();
+
+      // Check if the email exists in the admin collection
+      final querySnapshot = await _firestore
+          .collection('admin')
+          .where('email', isEqualTo: email)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        _errorMessage = "No admin found with this email address.";
+        notifyListeners();
+        _isLoading = false;
+        return;
+      }
+
+      // Send password reset email
+      await _auth.sendPasswordResetEmail(email: email);
+
+      _errorMessage = null; // Clear any previous error messages
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Password reset email sent to $email")),
+      );
+    } on FirebaseAuthException catch (e) {
+      // Handle Firebase errors
+      if (e.code == 'user-not-found') {
+        _errorMessage = "No user found with this email address.";
+      } else if (e.code == 'invalid-email') {
+        _errorMessage = "The email address is not valid.";
+      } else {
+        _errorMessage = e.message;
+      }
+      notifyListeners();
+    } catch (e) {
+      // Handle other errors
+      _errorMessage = e.toString();
+      notifyListeners();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   // Method to sign out the user
   Future<void> signOut() async {
     await _auth.signOut();

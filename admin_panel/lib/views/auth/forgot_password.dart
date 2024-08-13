@@ -1,10 +1,9 @@
 import 'package:admin_panel/controllers/auth_controller.dart';
-import 'package:admin_panel/views/auth/forgot_password.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
-class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+class ForgotPasswordView extends StatelessWidget {
+  const ForgotPasswordView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,7 @@ class LoginView extends StatelessWidget {
           Container(
             color: Colors.black.withOpacity(0.3),
           ),
-          // Login form
+          // Forgot Password Form
           Center(
             child: Container(
               width: isMobile ? screenWidth * 0.9 : 400,
@@ -71,29 +70,15 @@ class LoginView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16.0),
-                  // Password Input
-                  TextFormField(
-                    controller: authController.passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.lock),
-                      hintText: 'Password',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  // Login Button
+                  // Reset Password Button
                   ElevatedButton(
                     onPressed: authController.isLoading
                         ? null
                         : () async {
                             final email =
                                 authController.emailController.text.trim();
-                            final password =
-                                authController.passwordController.text.trim();
 
-                            await authController.login(
-                                email, password, context);
+                            await authController.resetPassword(email, context);
                           },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
@@ -104,26 +89,20 @@ class LoginView extends StatelessWidget {
                                 AlwaysStoppedAnimation<Color>(Colors.black),
                           )
                         : const Text(
-                            'Login',
+                            'Reset Password',
                             style: TextStyle(color: Colors.black),
                           ),
                   ),
                   const SizedBox(height: 16.0),
-                  // Forgot Password Link
+                  // Back to Login Link
                   TextButton(
                     onPressed: authController.isLoading
                         ? null
                         : () {
-                            // Navigate to the Forgot Password page
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ForgotPasswordView()),
-                            );
+                            Navigator.of(context).pop();
                           },
                     child: const Text(
-                      'Forgot Password?',
+                      'Back to Login',
                       style: TextStyle(color: Colors.black),
                     ),
                   ),
