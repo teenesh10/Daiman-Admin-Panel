@@ -69,6 +69,7 @@ class LoginView extends StatelessWidget {
                       hintText: 'Email',
                       border: OutlineInputBorder(),
                     ),
+                     style: const TextStyle(color: Colors.black),
                   ),
                   const SizedBox(height: 16.0),
                   // Password Input
@@ -80,6 +81,7 @@ class LoginView extends StatelessWidget {
                       hintText: 'Password',
                       border: OutlineInputBorder(),
                     ),
+                     style: const TextStyle(color: Colors.black),
                   ),
                   const SizedBox(height: 16.0),
                   // Login Button

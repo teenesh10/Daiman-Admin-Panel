@@ -1,184 +1,150 @@
-// import 'package:admin_panel/views/widgets/header.dart';
-// import 'package:admin_panel/views/widgets/side_menu.dart';
-// import 'package:flutter/material.dart';
+import 'package:admin_panel/controllers/manage_facility_controller.dart';
+import 'package:admin_panel/views/widgets/header.dart';
+import 'package:admin_panel/views/widgets/side_menu.dart';
+import 'package:flutter/material.dart';
 
+class FacilityView extends StatefulWidget {
+  const FacilityView({super.key});
 
-// class FacilityView extends StatefulWidget {
-//   const FacilityView({super.key});
+  @override
+  State<FacilityView> createState() => _FacilityViewState();
+}
 
-//   @override
-//   State<FacilityView> createState() => _FacilityViewState();
-// }
+class _FacilityViewState extends State<FacilityView> {
+  final ManageFacilityController _controller = ManageFacilityController();
+  bool isExpanded = true;
+  String searchQuery = '';
 
-// class _FacilityViewState extends State<FacilityView> {
-//     bool isExpanded = false;
+  @override
+  Widget build(BuildContext context) {
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Row(
-//         children: [
-//           SideMenu(
-//             isExpanded: isExpanded,
-//             onExpansionChanged: (expanded) {
-//               setState(() {
-//                 isExpanded = expanded;
-//               });
-//             },
-//           ),
-//           Expanded(
-//             child: Padding(
-//               padding: const EdgeInsets.all(60.0),
-//               child: SingleChildScrollView(
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.start,
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Header(
-//                       onMenuPressed: () {
-//                         setState(() {
-//                           isExpanded = !isExpanded;
-//                         });
-//                       },
-//                     ),
-//                     const SizedBox(height: 20.0),
-//                     const SizedBox(height: 30.0),
-//                     _buildArticleSection(),
-//                     const SizedBox(height: 40.0),
-//                     _buildFilterSection(),
-//                     const SizedBox(height: 40.0),
-//                     _buildDataTable(),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
+    return Scaffold(
+      body: Row(
+        children: [
+        const SideMenu(),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                 const Header(),
+                  const SizedBox(height: 20.0),
+                  const Text(
+                    "Facilities",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20.0),
+                  // Search bar and Add button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          // Handle add new facility
+                        },
+                        icon: const Icon(Icons.add),
+                        label: const Text("Add New Facility"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepPurple.shade400,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20.0),
+                  Expanded(
+                    child: StreamBuilder<List<Facility>>(
+                      stream: _controller.getFacilities(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                        if (snapshot.hasError) {
+                          return const Center(child: Text('Error loading facilities'));
+                        }
+                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Center(child: Text('No facilities found'));
+                        }
 
-//   Widget _buildArticleSection() {
-//     return const Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Column(
-//           children: [
-//             Text(
-//               "6 Articles",
-//               style: TextStyle(
-//                 fontWeight: FontWeight.bold,
-//                 fontSize: 28.0,
-//               ),
-//             ),
-//             SizedBox(height: 10.0),
-//             Text(
-//               "3 new Articles",
-//               style: TextStyle(
-//                 color: Colors.grey,
-//                 fontSize: 18.0,
-//                 fontWeight: FontWeight.w400,
-//               ),
-//             ),
-//           ],
-//         ),
-//         SizedBox(
-//           width: 300.0,
-//           child: TextField(
-//             decoration: InputDecoration(
-//               hintText: "Type Article Title",
-//               prefixIcon: Icon(Icons.search),
-//               border: OutlineInputBorder(
-//                 borderSide: BorderSide(
-//                   color: Colors.black26,
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
+                        final facilities = snapshot.data!
+                            .where((facility) =>
+                                facility.facilityName.toLowerCase().contains(searchQuery.toLowerCase()))
+                            .toList();
 
-//   Widget _buildFilterSection() {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         TextButton.icon(
-//           onPressed: () {},
-//           icon: Icon(Icons.arrow_back, color: Colors.deepPurple.shade400),
-//           label: Text(
-//             "2022, July 14, July 15, July 16",
-//             style: TextStyle(color: Colors.deepPurple.shade400),
-//           ),
-//         ),
-//         Row(
-//           children: [
-//             DropdownButton<String>(
-//               hint: const Text("Filter by"),
-//               items: const [
-//                 DropdownMenuItem(value: "Date", child: Text("Date")),
-//                 DropdownMenuItem(value: "Comments", child: Text("Comments")),
-//                 DropdownMenuItem(value: "Views", child: Text("Views")),
-//               ],
-//               onChanged: (value) {},
-//             ),
-//             const SizedBox(width: 20.0),
-//             DropdownButton<String>(
-//               hint: const Text("Order by"),
-//               items: const [
-//                 DropdownMenuItem(value: "Date", child: Text("Date")),
-//                 DropdownMenuItem(value: "Comments", child: Text("Comments")),
-//                 DropdownMenuItem(value: "Views", child: Text("Views")),
-//               ],
-//               onChanged: (value) {},
-//             ),
-//           ],
-//         ),
-//       ],
-//     );
-//   }
-
-//   Widget _buildDataTable() {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.stretch,
-//       children: [
-//         DataTable(
-//           headingRowColor: MaterialStateProperty.resolveWith(
-//               (states) => Colors.grey.shade200),
-//           columns: const [
-//             DataColumn(label: Text("ID")),
-//             DataColumn(label: Text("Article Title")),
-//             DataColumn(label: Text("Creation Date")),
-//             DataColumn(label: Text("Views")),
-//             DataColumn(label: Text("Comments")),
-//           ],
-//           rows: [
-//             DataRow(cells: [
-//               const DataCell(Text("0")),
-//               const DataCell(Text("How to build a Flutter Web App")),
-//               DataCell(Text("${DateTime.now()}")),
-//               const DataCell(Text("2.3K Views")),
-//               const DataCell(Text("102 Comments")),
-//             ]),
-//             DataRow(cells: [
-//               const DataCell(Text("1")),
-//               const DataCell(Text("How to build a Flutter Mobile App")),
-//               DataCell(Text("${DateTime.now()}")),
-//               const DataCell(Text("21.3K Views")),
-//               const DataCell(Text("1020 Comments")),
-//             ]),
-//             DataRow(cells: [
-//               const DataCell(Text("2")),
-//               const DataCell(Text("Flutter for your first project")),
-//               DataCell(Text("${DateTime.now()}")),
-//               const DataCell(Text("2.3M Views")),
-//               const DataCell(Text("10K Comments")),
-//             ]),
-//           ],
-//         ),
-//       ],
-//     );
-
-//   }
-// }
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(
+                            headingRowColor: MaterialStateProperty.resolveWith(
+                                (states) => Colors.grey.shade200),
+                            columns: const [
+                              DataColumn(label: Text("#")),
+                              DataColumn(label: Text("Facility Name")),
+                              DataColumn(label: Text("Capacity")),
+                              DataColumn(label: Text("Actions")),
+                            ],
+                            rows: List.generate(facilities.length, (index) {
+                              final facility = facilities[index];
+                              return DataRow(
+                                cells: [
+                                  DataCell(Text((index + 1).toString())),
+                                  DataCell(Text(facility.facilityName)),
+                                  DataCell(Text(facility.capacity.toString())),
+                                  DataCell(
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.visibility),
+                                          onPressed: () {
+                                            // Handle view facility
+                                          },
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.edit),
+                                          onPressed: () {
+                                            // Handle edit facility
+                                          },
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.delete, color: Colors.red),
+                                          onPressed: () async {
+                                            // Handle delete facility
+                                            // await _controller.deleteFacility(facility.facilityId);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }),
+                            border: TableBorder( // Add border
+                              horizontalInside: BorderSide(
+                                width: 1,
+                                color: Colors.grey.shade300,
+                                style: BorderStyle.solid,
+                              ),
+                              bottom: BorderSide(
+                                width: 1,
+                                color: Colors.grey.shade300,
+                                style: BorderStyle.solid,
+                              ),
+                              verticalInside: BorderSide( // Add vertical borders for responsiveness
+                                width: 1,
+                                color: Colors.grey.shade300,
+                                style: BorderStyle.solid,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

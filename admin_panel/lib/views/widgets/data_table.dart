@@ -1,81 +1,38 @@
 import 'package:flutter/material.dart';
 
-class CustomDataTable extends StatelessWidget {
-  const CustomDataTable({super.key});
+class CustomDataTable<T> extends StatelessWidget {
+  final Stream<List<T>> dataStream;
+  final List<String> columns;
+  final List<DataRow> Function(List<T>) buildRows;
+
+  const CustomDataTable({
+    super.key,
+    required this.dataStream,
+    required this.columns,
+    required this.buildRows,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        DataTable(
-          headingRowColor: MaterialStateProperty.resolveWith(
-              (states) => Colors.grey.shade200),
-          columns: const [
-            DataColumn(label: Text("ID")),
-            DataColumn(label: Text("Article Title")),
-            DataColumn(label: Text("Creation Date")),
-            DataColumn(label: Text("Views")),
-            DataColumn(label: Text("Comments")),
-          ],
-          rows: [
-            DataRow(cells: [
-              const DataCell(Text("0")),
-              const DataCell(Text("How to build a Flutter Web App")),
-              DataCell(Text("${DateTime.now()}")),
-              const DataCell(Text("2.3K Views")),
-              const DataCell(Text("102 Comments")),
-            ]),
-            DataRow(cells: [
-              const DataCell(Text("1")),
-              const DataCell(Text("How to build a Flutter Mobile App")),
-              DataCell(Text("${DateTime.now()}")),
-              const DataCell(Text("21.3K Views")),
-              const DataCell(Text("1020 Comments")),
-            ]),
-            DataRow(cells: [
-              const DataCell(Text("2")),
-              const DataCell(Text("Flutter for your first project")),
-              DataCell(Text("${DateTime.now()}")),
-              const DataCell(Text("2.3M Views")),
-              const DataCell(Text("10K Comments")),
-            ]),
-          ],
-        ),
-        const SizedBox(height: 40.0),
-        Row(
-          children: [
-            TextButton(
-              onPressed: () {},
-              child: const Text(
-                "1",
-                style: TextStyle(color: Colors.deepPurple),
-              ),
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text(
-                "2",
-                style: TextStyle(color: Colors.deepPurple),
-              ),
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text(
-                "3",
-                style: TextStyle(color: Colors.deepPurple),
-              ),
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text(
-                "See All",
-                style: TextStyle(color: Colors.deepPurple),
-              ),
-            ),
-          ],
-        ),
-      ],
+    return StreamBuilder<List<T>>(
+      stream: dataStream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return const Center(child: Text('Error loading data'));
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No data found'));
+        }
+
+        final data = snapshot.data!;
+        return DataTable(
+          columns: columns.map((col) => DataColumn(label: Text(col))).toList(),
+          rows: buildRows(data),
+        );
+      },
     );
   }
 }

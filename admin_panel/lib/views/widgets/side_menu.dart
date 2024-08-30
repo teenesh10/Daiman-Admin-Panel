@@ -1,104 +1,106 @@
-// side_menu.dart
-// ignore_for_file: library_private_types_in_public_api
-
-import 'package:admin_panel/views/dashboard/dashboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:admin_panel/controllers/auth_controller.dart'; // Import AuthController
 
-class SideMenu extends StatefulWidget {
-  final bool isExpanded;
-  final ValueChanged<bool> onExpansionChanged;
-
-  const SideMenu({
-    super.key,
-    required this.isExpanded,
-    required this.onExpansionChanged,
-  });
-
-  @override
-  _SideMenuState createState() => _SideMenuState();
-}
-
-class _SideMenuState extends State<SideMenu> {
-  int _selectedIndex = 0;
-
-  final _pages = [
-    const DashboardView(), // Replace with your actual pages
-    // const FacilityView(),
-    // Add other pages here if needed
-  ];
+class SideMenu extends StatelessWidget {
+  const SideMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.deepPurple.shade400,
-      child: Column(
+    final authController = context.watch<AuthController>(); // Get AuthController
+
+    return Drawer(
+      backgroundColor: Colors.black,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(0)), // Remove rounded corners
+      ),
+      child: ListView(
         children: [
-          // Logo and Admin Panel Text
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundImage: AssetImage('assets/logos/small_logo.png'), // Replace with your logo asset
-                ),
-                SizedBox(height: 10),
-                Text(
-                  "Daiman Admin Panel",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+          const DrawerHeader(
+            child: CircleAvatar(
+              radius: 40,
+              backgroundImage: AssetImage('assets/logos/small_logo.png'), // Replace with your logo asset
             ),
           ),
-         const Divider(color: Colors.white, thickness: 2),
-
-          // Navigation Menu
-          Expanded(
-            child: NavigationRail(
-              extended: widget.isExpanded,
-              backgroundColor: Colors.transparent,
-              unselectedIconTheme: const IconThemeData(color: Colors.white, opacity: 1),
-              unselectedLabelTextStyle: const TextStyle(color: Colors.white),
-              selectedIconTheme: IconThemeData(color: Colors.deepPurple.shade900),
-              destinations: const [
-                NavigationRailDestination(
-                  icon: Icon(Icons.home),
-                  label: Text("Dashboard"),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.bar_chart),
-                  label: Text("Facilities"),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.person),
-                  label: Text("Facility Rates"),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.settings),
-                  label: Text("Bookings"),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.settings),
-                  label: Text("Queries"),
-                ),
-              ],
-              selectedIndex: _selectedIndex,
-              onDestinationSelected: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => _pages[index]),
-                );
-              },
-            ),
+          DrawerListTile(
+            title: "Dashboard",
+            svgSrc: "assets/icons/menu_dashboard.svg",
+            press: () {
+              authController.setPage("Dashboard"); // Update the current page
+              Navigator.pushNamed(context, '/dashboard'); // Navigate to the dashboard page
+            },
+          ),
+          DrawerListTile(
+            title: "Facilities",
+            svgSrc: "assets/icons/menu_tran.svg",
+            press: () {
+              authController.setPage("Facilities"); // Update the current page
+              Navigator.pushNamed(context, '/facilities'); // Navigate to facilities page
+            },
+          ),
+          DrawerListTile(
+            title: "Task",
+            svgSrc: "assets/icons/menu_task.svg",
+            press: () {
+              authController.setPage("Task"); // Update the current page
+              Navigator.pushNamed(context, '/task'); // Navigate to task page
+            },
+          ),
+          DrawerListTile(
+            title: "Documents",
+            svgSrc: "assets/icons/menu_doc.svg",
+            press: () {
+              authController.setPage("Documents"); // Update the current page
+              Navigator.pushNamed(context, '/documents'); // Navigate to documents page
+            },
+          ),
+          DrawerListTile(
+            title: "Store",
+            svgSrc: "assets/icons/menu_store.svg",
+            press: () {
+              authController.setPage("Store"); // Update the current page
+              Navigator.pushNamed(context, '/store'); // Navigate to store page
+            },
+          ),
+          DrawerListTile(
+            title: "Settings",
+            svgSrc: "assets/icons/menu_setting.svg",
+            press: () {
+              authController.setPage("Settings"); // Update the current page
+              Navigator.pushNamed(context, '/settings'); // Navigate to settings page
+            },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class DrawerListTile extends StatelessWidget {
+  const DrawerListTile({
+    super.key,
+    required this.title,
+    required this.svgSrc,
+    required this.press,
+  });
+
+  final String title, svgSrc;
+  final VoidCallback press;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: press,
+      horizontalTitleGap: 0.0,
+      leading: SvgPicture.asset(
+        svgSrc,
+        colorFilter: const ColorFilter.mode(Colors.white54, BlendMode.srcIn),
+        height: 16,
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(color: Colors.white54),
       ),
     );
   }

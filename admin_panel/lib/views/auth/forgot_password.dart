@@ -68,6 +68,7 @@ class ForgotPasswordView extends StatelessWidget {
                       hintText: 'Email',
                       border: OutlineInputBorder(),
                     ),
+                     style: const TextStyle(color: Colors.black),
                   ),
                   const SizedBox(height: 16.0),
                   // Reset Password Button

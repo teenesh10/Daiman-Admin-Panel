@@ -23,6 +23,9 @@ class AuthController with ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
+  String _currentPage = "Dashboard";
+  String get currentPage => _currentPage;
+
   // Method to log in an admin
   Future<void> login(
       String email, String password, BuildContext context) async {
@@ -150,6 +153,13 @@ class AuthController with ChangeNotifier {
     notifyListeners();
   }
 
+   // Method to update the current page
+  void setPage(String pageName) {
+    _currentPage = pageName;
+    notifyListeners();
+  }
+
+  
   @override
   void dispose() {
     // Dispose controllers when they are no longer needed

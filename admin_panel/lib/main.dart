@@ -1,8 +1,12 @@
+import 'package:admin_panel/constants.dart';
 import 'package:admin_panel/controllers/auth_controller.dart';
 import 'package:admin_panel/views/auth/login.dart';
+import 'package:admin_panel/views/dashboard/dashboard.dart';
+import 'package:admin_panel/views/facility/view_facility_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,15 +23,45 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override
+ @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      // Provide the AuthController to the entire app
-      create: (context) => AuthController(),
-      child: const MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => AuthController(),
+        ),
+        // Add more providers here if needed
+      ],
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: LoginView(),
+        theme: ThemeData(
+          scaffoldBackgroundColor: bgColor,
+          textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
+              .apply(bodyColor: Colors.black),
+          canvasColor: secondaryColor,
+        ),
+        initialRoute: '/',
+        onGenerateRoute: _generateRoute,
       ),
     );
+  }
+
+  Route<dynamic> _generateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case '/':
+        return MaterialPageRoute(builder: (_) => const LoginView());
+      case '/dashboard':
+        return MaterialPageRoute(builder: (_) => const DashboardView());
+      case '/facilities':
+        return MaterialPageRoute(builder: (_) => const FacilityView());
+      // Add more routes here
+      default:
+        return MaterialPageRoute(
+          builder: (_) => Scaffold(
+            appBar: AppBar(title: const Text('Not Found')),
+            body: const Center(child: Text('Page not found')),
+          ),
+        );
+    }
   }
 }
