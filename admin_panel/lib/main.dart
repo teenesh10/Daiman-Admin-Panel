@@ -2,6 +2,8 @@ import 'package:admin_panel/constants.dart';
 import 'package:admin_panel/controllers/auth_controller.dart';
 import 'package:admin_panel/views/auth/login.dart';
 import 'package:admin_panel/views/dashboard/dashboard.dart';
+import 'package:admin_panel/views/facility/add_facility_page.dart';
+import 'package:admin_panel/views/facility/court/add_court_page.dart';
 import 'package:admin_panel/views/facility/view_facility_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +56,10 @@ class MyApp extends StatelessWidget {
         return MaterialPageRoute(builder: (_) => const DashboardView());
       case '/facilities':
         return MaterialPageRoute(builder: (_) => const FacilityView());
+      case '/add_facility':
+        return MaterialPageRoute(builder: (_) => const AddFacilityPage());
+      case '/add_court':
+        return MaterialPageRoute(builder: (_) => const AddCourtPage());
       // Add more routes here
       default:
         return MaterialPageRoute(

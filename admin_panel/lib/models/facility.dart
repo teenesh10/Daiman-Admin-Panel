@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Facility {
   String facilityID;
   String facilityName;
@@ -11,19 +13,19 @@ class Facility {
     required this.description,
   });
 
-  // Convert a Firebase DocumentSnapshot into an Facility object
-  factory Facility.fromDocumentSnapshot(
-      Map<String, dynamic> data, String documentId) {
+  // Convert a Firebase DocumentSnapshot into a Facility object
+  factory Facility.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return Facility(
-      facilityID: documentId,
+      facilityID: doc.id,
       facilityName: data['facilityName'],
       capacity: data['capacity'],
       description: data['description'],
     );
   }
 
-  // Convert an Facility object into a map for Firebase
-  Map<String, dynamic> toMap() {
+  // Convert a Facility object into a map for Firebase
+  Map<String, dynamic> toFirestore() {
     return {
       'facilityName': facilityName,
       'capacity': capacity,

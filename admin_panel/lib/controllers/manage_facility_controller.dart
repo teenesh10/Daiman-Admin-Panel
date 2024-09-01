@@ -1,3 +1,5 @@
+import 'package:admin_panel/models/court.dart';
+import 'package:admin_panel/models/facility.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ManageFacilityController {
@@ -18,7 +20,7 @@ class ManageFacilityController {
     final courtsSnapshot = await _firestore
         .collection('facility')
         .doc(facilityId)
-        .collection('courts')
+        .collection('court')
         .get();
 
     for (var doc in courtsSnapshot.docs) {
@@ -34,7 +36,7 @@ class ManageFacilityController {
     return _firestore
         .collection('facility')
         .doc(facilityId)
-        .collection('courts')
+        .collection('court')
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {
@@ -48,7 +50,7 @@ class ManageFacilityController {
     await _firestore
         .collection('facility')
         .doc(facilityId)
-        .collection('courts')
+        .collection('court')
         .add(court.toFirestore());
   }
 
@@ -57,70 +59,19 @@ class ManageFacilityController {
     await _firestore
         .collection('facility')
         .doc(facilityId)
-        .collection('courts')
+        .collection('court')
         .doc(courtId)
         .delete();
   }
 
-  // Fetch details of a specific facility (optional)
+  // Fetch details of a specific facility
   Future<Facility> getFacilityDetails(String facilityId) async {
     final doc = await _firestore.collection('facility').doc(facilityId).get();
     return Facility.fromFirestore(doc);
   }
-}
 
-class Court {
-  final String courtId;
-  final String courtName;
-  final String description;
-
-  Court({
-    required this.courtId,
-    required this.courtName,
-    required this.description,
-  });
-
-  factory Court.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return Court(
-      courtId: doc.id,
-      courtName: data['courtName'] ?? '',
-      description: data['description'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      'courtName': courtName,
-      'description': description,
-    };
-  }
-}
-
-class Facility {
-  final String facilityId;
-  final String facilityName;
-  final int capacity;
-
-  Facility({
-    required this.facilityId,
-    required this.facilityName,
-    required this.capacity,
-  });
-
-  factory Facility.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return Facility(
-      facilityId: doc.id,
-      facilityName: data['facilityName'] ?? '',
-      capacity: data['capacity'] ?? 0,
-    );
-  }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      'facilityName': facilityName,
-      'capacity': capacity,
-    };
+  // Add a new facility and return the document reference
+  Future<DocumentReference> addFacility(Facility facility) async {
+    return await _firestore.collection('facility').add(facility.toFirestore());
   }
 }
