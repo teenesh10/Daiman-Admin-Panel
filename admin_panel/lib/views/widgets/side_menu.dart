@@ -40,7 +40,7 @@ class SideMenu extends StatelessWidget {
             },
           ),
           DrawerListTile(
-            title: "Task",
+            title: "Facility Rates",
             svgSrc: "assets/icons/menu_task.svg",
             press: () {
               authController.setPage("Task"); // Update the current page
@@ -48,7 +48,7 @@ class SideMenu extends StatelessWidget {
             },
           ),
           DrawerListTile(
-            title: "Documents",
+            title: "Bookings",
             svgSrc: "assets/icons/menu_doc.svg",
             press: () {
               authController.setPage("Documents"); // Update the current page
@@ -56,7 +56,7 @@ class SideMenu extends StatelessWidget {
             },
           ),
           DrawerListTile(
-            title: "Store",
+            title: "Queries",
             svgSrc: "assets/icons/menu_store.svg",
             press: () {
               authController.setPage("Store"); // Update the current page

@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:admin_panel/models/court.dart';
 
@@ -31,89 +33,101 @@ class _AddCourtPageState extends State<AddCourtPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Size _size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add New Court'),
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
       ),
-      body: Padding(
+      child: Container(
         padding: const EdgeInsets.all(20.0),
+        width: size.width < 600 ? size.width * 0.8 : size.width * 0.5,
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Court Name',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a court name';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _courtName = value!;
-                },
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a description';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _description = value!;
-                },
-              ),
-              const SizedBox(height: 20.0),
-              SwitchListTile(
-                title: const Text('Available'),
-                value: _availability,
-                onChanged: (value) {
-                  setState(() {
-                    _availability = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 20.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Cancel'),
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20.0,
-                        vertical: _size.width < 600 ? 10.0 : 15.0,
-                      ),
-                      backgroundColor: Colors.red,
-                    ),
+          child: SingleChildScrollView(
+            // To handle overflow
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Text(
+                    'Add New Court',
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  ElevatedButton(
-                    onPressed: _submitForm,
-                    child: const Text('Submit'),
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20.0,
-                        vertical: _size.width < 600 ? 10.0 : 15.0,
-                      ),
-                      backgroundColor: Colors.green,
-                    ),
+                ),
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Court Name',
                   ),
-                ],
-              ),
-            ],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a court name';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _courtName = value!;
+                  },
+                ),
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a description';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _description = value!;
+                  },
+                ),
+                const SizedBox(height: 20.0),
+                SwitchListTile(
+                  title: const Text('Available'),
+                  value: _availability,
+                  onChanged: (value) {
+                    setState(() {
+                      _availability = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 20.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.0,
+                          vertical: size.width < 600 ? 10.0 : 15.0,
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: _submitForm,
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.0,
+                          vertical: size.width < 600 ? 10.0 : 15.0,
+                        ),
+                        backgroundColor: Colors.green,
+                      ),
+                      child: const Text('Submit'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

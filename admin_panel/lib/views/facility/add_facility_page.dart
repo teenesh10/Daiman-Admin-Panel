@@ -1,5 +1,6 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+// ignore_for_file: library_private_types_in_public_api
 
+import 'package:admin_panel/views/facility/court/add_court_page.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_panel/controllers/manage_facility_controller.dart';
 import 'package:admin_panel/models/court.dart';
@@ -26,18 +27,18 @@ class _AddFacilityPageState extends State<AddFacilityPage> {
   bool _isCapacityValid = false;
 
   void _addCourt() async {
-    final newCourt = await Navigator.pushNamed(context, '/add_court');
+    final newCourt = await showDialog<Court>(
+      context: context,
+      builder: (BuildContext context) {
+        return const AddCourtPage();
+      },
+    );
+
     if (newCourt != null) {
-      if (newCourt is Court) {
-        setState(() {
-          _courts.add(newCourt);
-          _updateRemainingCourtsMessage();
-        });
-      } else {
-        print('Unexpected result from /add_court: $newCourt');
-      }
-    } else {
-      print('No court was returned from /add_court');
+      setState(() {
+        _courts.add(newCourt);
+        _updateRemainingCourtsMessage();
+      });
     }
   }
 
@@ -127,156 +128,171 @@ class _AddFacilityPageState extends State<AddFacilityPage> {
             child: Column(
               children: [
                 const Header(),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 60.0),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 10.0,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Center(
-                            child: Text(
-                              "Add New Facility",
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
+                  child: Center(
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxWidth: 800.0, // Maximum width for the form
+                        minHeight:
+                            size.height * 0.4, // Minimum height for the form
+                      ),
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10.0,
+                            offset: const Offset(0, 5),
                           ),
-                          const SizedBox(height: 20.0),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Facility Name',
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a facility name';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _facilityName = value!;
-                            },
-                          ),
-                          const SizedBox(height: 20.0),
-                          Row(
+                        ],
+                      ),
+                      child: Form(
+                        key: _formKey,
+                        child: SingleChildScrollView(
+                          // To handle overflow in smaller screens
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: TextFormField(
-                                  decoration: const InputDecoration(
-                                    labelText: 'Capacity (No. of courts)',
-                                  ),
-                                  keyboardType: TextInputType.number,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a capacity';
-                                    }
-                                    if (int.tryParse(value) == null ||
-                                        int.parse(value) <= 0) {
-                                      return 'Please enter a valid capacity';
-                                    }
-                                    return null;
-                                  },
-                                  onChanged: (value) {
-                                    _capacity = int.tryParse(value) ?? 0;
-                                    _checkCapacityValidity();
-                                    _updateRemainingCourtsMessage();
-                                  },
-                                  onSaved: (value) {
-                                    _capacity = int.parse(value!);
-                                  },
+                              Center(
+                                child: Text(
+                                  "Add New Facility",
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
                               ),
-                              const SizedBox(width: 20.0),
-                              ElevatedButton.icon(
-                                onPressed: _isCapacityValid ? _addCourt : null,
-                                icon: const Icon(Icons.add),
-                                label: const Text('Add Court'),
-                                style: TextButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 20.0,
-                                    vertical: size.width < 600 ? 10.0 : 15.0,
+                              const SizedBox(height: 20.0),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Facility Name',
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a facility name';
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  _facilityName = value!;
+                                },
+                              ),
+                              const SizedBox(height: 20.0),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      decoration: const InputDecoration(
+                                        labelText: 'Capacity (No. of courts)',
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter a capacity';
+                                        }
+                                        if (int.tryParse(value) == null ||
+                                            int.parse(value) <= 0) {
+                                          return 'Please enter a valid capacity';
+                                        }
+                                        return null;
+                                      },
+                                      onChanged: (value) {
+                                        _capacity = int.tryParse(value) ?? 0;
+                                        _checkCapacityValidity();
+                                        _updateRemainingCourtsMessage();
+                                      },
+                                      onSaved: (value) {
+                                        _capacity = int.parse(value!);
+                                      },
+                                    ),
                                   ),
-                                  backgroundColor: _isCapacityValid
-                                      ? Colors.green
-                                      : Colors.grey,
+                                  const SizedBox(width: 20.0),
+                                  ElevatedButton.icon(
+                                    onPressed:
+                                        _isCapacityValid ? _addCourt : null,
+                                    icon: const Icon(Icons.add),
+                                    label: const Text('Add Court'),
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 20.0,
+                                        vertical:
+                                            size.width < 600 ? 10.0 : 15.0,
+                                      ),
+                                      backgroundColor: _isCapacityValid
+                                          ? Colors.green
+                                          : Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (_remainingCourtsMessage.isNotEmpty) ...[
+                                const SizedBox(height: 10.0),
+                                Text(
+                                  _remainingCourtsMessage,
+                                  style: const TextStyle(color: Colors.red),
+                                ),
+                              ],
+                              const SizedBox(height: 20.0),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Description',
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a description';
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  _description = value!;
+                                },
+                              ),
+                              const SizedBox(height: 20.0),
+                              Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      style: TextButton.styleFrom(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 20.0,
+                                          vertical:
+                                              size.width < 600 ? 10.0 : 15.0,
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    ElevatedButton(
+                                      onPressed: _capacity > 0 &&
+                                              _courts.length == _capacity
+                                          ? _submitForm
+                                          : null,
+                                      style: TextButton.styleFrom(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 20.0,
+                                          vertical:
+                                              size.width < 600 ? 10.0 : 15.0,
+                                        ),
+                                        backgroundColor: (_capacity > 0 &&
+                                                _courts.length == _capacity)
+                                            ? const Color.fromARGB(
+                                                255, 0, 123, 255)
+                                            : Colors.grey,
+                                      ),
+                                      child: const Text('Submit'),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                          if (_remainingCourtsMessage.isNotEmpty) ...[
-                            const SizedBox(height: 10.0),
-                            Text(
-                              _remainingCourtsMessage,
-                              style: const TextStyle(color: Colors.red),
-                            ),
-                          ],
-                          const SizedBox(height: 20.0),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Description',
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a description';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _description = value!;
-                            },
-                          ),
-                          const SizedBox(height: 20.0),
-                          Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  style: TextButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 20.0,
-                                      vertical: size.width < 600 ? 10.0 : 15.0,
-                                    ),
-                                    backgroundColor: Colors.red,
-                                  ),
-                                  child: const Text('Cancel'),
-                                ),
-                                const SizedBox(width: 10.0),
-                                ElevatedButton(
-                                  onPressed: _capacity > 0 &&
-                                          _courts.length == _capacity
-                                      ? _submitForm
-                                      : null,
-                                  style: TextButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 20.0,
-                                      vertical: size.width < 600 ? 10.0 : 15.0,
-                                    ),
-                                    backgroundColor: (_capacity > 0 &&
-                                            _courts.length == _capacity)
-                                        ? const Color.fromARGB(255, 0, 123, 255)
-                                        : Colors.grey,
-                                  ),
-                                  child: const Text('Submit'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
