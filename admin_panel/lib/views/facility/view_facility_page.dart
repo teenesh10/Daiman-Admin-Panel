@@ -1,5 +1,6 @@
 import 'package:admin_panel/controllers/manage_facility_controller.dart';
 import 'package:admin_panel/models/facility.dart';
+import 'package:admin_panel/views/facility/facility_info_page.dart';
 import 'package:admin_panel/views/widgets/header.dart';
 import 'package:admin_panel/views/widgets/side_menu.dart';
 import 'package:flutter/material.dart';
@@ -185,7 +186,19 @@ class _FacilityViewState extends State<FacilityView> {
                                         IconButton(
                                           icon: const Icon(Icons.visibility),
                                           onPressed: () {
-                                            // Handle view facility
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return FacilityInfoPage(
+                                                  facilityId:
+                                                      facility.facilityID,
+                                                  onClose: () {
+                                                    Navigator.of(context)
+                                                        .pop(); // Close the FacilityInfoPage dialog
+                                                  },
+                                                );
+                                              },
+                                            );
                                           },
                                         ),
                                         IconButton(
