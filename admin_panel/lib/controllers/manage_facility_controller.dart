@@ -74,4 +74,13 @@ class ManageFacilityController {
   Future<DocumentReference> addFacility(Facility facility) async {
     return await _firestore.collection('facility').add(facility.toFirestore());
   }
+
+
+  // Update an existing facility
+  Future<void> updateFacility(Facility updatedFacility) async {
+    await _firestore
+        .collection('facility')
+        .doc(updatedFacility.facilityID) // Ensure that Facility model has an id field
+        .update(updatedFacility.toFirestore());
+  }
 }

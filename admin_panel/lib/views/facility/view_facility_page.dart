@@ -1,5 +1,6 @@
 import 'package:admin_panel/controllers/manage_facility_controller.dart';
 import 'package:admin_panel/models/facility.dart';
+import 'package:admin_panel/views/facility/edit_facility_page.dart';
 import 'package:admin_panel/views/facility/facility_info_page.dart';
 import 'package:admin_panel/views/widgets/header.dart';
 import 'package:admin_panel/views/widgets/side_menu.dart';
@@ -15,6 +16,29 @@ class FacilityView extends StatefulWidget {
 class _FacilityViewState extends State<FacilityView> {
   final ManageFacilityController _controller = ManageFacilityController();
   String searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFacilities();
+  }
+
+  void _loadFacilities() async {
+    final facilitiesStream = _controller.getFacilities();
+    facilitiesStream.listen((facilities) {
+      setState(() {
+      });
+    });
+  }
+
+  void _editFacility(Facility facility) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditFacilityPage(facility: facility),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -203,9 +227,10 @@ class _FacilityViewState extends State<FacilityView> {
                                         ),
                                         IconButton(
                                           icon: const Icon(Icons.edit),
-                                          onPressed: () {
+                                          onPressed: () 
+                                          => _editFacility(facility),
                                             // Handle edit facility
-                                          },
+                                          
                                         ),
                                         IconButton(
                                           icon: const Icon(Icons.delete,
