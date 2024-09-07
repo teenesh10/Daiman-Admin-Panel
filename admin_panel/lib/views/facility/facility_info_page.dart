@@ -122,28 +122,6 @@ class FacilityInfoPage extends StatelessWidget {
                                   child: ListTile(
                                     title: Text(court.courtName),
                                     subtitle: Text(court.description),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        IconButton(
-                                          icon: const Icon(Icons.edit),
-                                          onPressed: () {
-                                            // Handle edit court
-                                          },
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.delete,
-                                              color: Colors.red),
-                                          onPressed: () async {
-                                            _showDeleteConfirmationDialog(
-                                                context,
-                                                court,
-                                                controller,
-                                                facilityId);
-                                          },
-                                        ),
-                                      ],
-                                    ),
                                   ),
                                 );
                               },
@@ -159,38 +137,6 @@ class FacilityInfoPage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  void _showDeleteConfirmationDialog(BuildContext context, Court court,
-      ManageFacilityController controller, String facilityId) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Delete Court"),
-          content: Text(
-            "Are you sure you want to delete ${court.courtName}? ${controller.getCourtsForFacility(facilityId).length == 1 ? "This will remove the facility as well." : ""}",
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text("Delete", style: TextStyle(color: Colors.red)),
-              onPressed: () async {
-                await controller.deleteCourt(facilityId, court.courtID);
-                Navigator.of(context).pop();
-                Navigator.of(context)
-                    .pop(); // Close the FacilityInfoPage dialog
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

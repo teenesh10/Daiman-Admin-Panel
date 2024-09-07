@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:admin_panel/controllers/manage_facility_controller.dart';
 import 'package:admin_panel/models/facility.dart';
 import 'package:admin_panel/views/facility/edit_facility_page.dart';
@@ -27,6 +29,7 @@ class _FacilityViewState extends State<FacilityView> {
     final facilitiesStream = _controller.getFacilities();
     facilitiesStream.listen((facilities) {
       setState(() {
+        // Facilities state updated here.
       });
     });
   }
@@ -40,6 +43,37 @@ class _FacilityViewState extends State<FacilityView> {
     );
   }
 
+  // Function to show the confirmation dialog for deleting a facility
+  void _showDeleteConfirmationDialog(BuildContext context, Facility facility) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Delete Facility"),
+          content: Text(
+            "Are you sure you want to delete the facility: ${facility.facilityName}? This action cannot be undone.",
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("Delete", style: TextStyle(color: Colors.red)),
+              onPressed: () async {
+                await _controller.deleteFacility(facility.facilityID);
+                Navigator.of(context).pop(); // Close the dialog
+                // Optionally, you can add a notification/snackbar here to indicate successful deletion.
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -47,7 +81,7 @@ class _FacilityViewState extends State<FacilityView> {
     return Scaffold(
       body: Row(
         children: [
-          // Use the SideMenu similar to DashboardView
+          // Side Menu similar to DashboardView
           const Expanded(
             flex: 1,
             child: SideMenu(),
@@ -56,7 +90,7 @@ class _FacilityViewState extends State<FacilityView> {
             flex: 5,
             child: Column(
               children: [
-                // Use the Header similar to DashboardView
+                // Header similar to DashboardView
                 const Header(),
                 const SizedBox(height: 20.0),
                 Padding(
@@ -70,8 +104,7 @@ class _FacilityViewState extends State<FacilityView> {
                       ),
                       ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.pushNamed(context,
-                              '/add_facility'); // Handle add new facility
+                          Navigator.pushNamed(context, '/add_facility');
                         },
                         icon: const Icon(Icons.add),
                         label: const Text("Add New Facility"),
@@ -227,18 +260,15 @@ class _FacilityViewState extends State<FacilityView> {
                                         ),
                                         IconButton(
                                           icon: const Icon(Icons.edit),
-                                          onPressed: () 
-                                          => _editFacility(facility),
-                                            // Handle edit facility
-                                          
+                                          onPressed: () =>
+                                              _editFacility(facility),
                                         ),
                                         IconButton(
                                           icon: const Icon(Icons.delete,
                                               color: Colors.red),
-                                          onPressed: () async {
-                                            // Handle delete facility
-                                            await _controller.deleteFacility(
-                                                facility.facilityID);
+                                          onPressed: () {
+                                            _showDeleteConfirmationDialog(
+                                                context, facility);
                                           },
                                         ),
                                       ],

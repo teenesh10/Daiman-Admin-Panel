@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:admin_panel/controllers/manage_facility_controller.dart';
 import 'package:admin_panel/models/facility.dart';
@@ -35,7 +37,9 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
   }
 
   void _loadFacilityDetails() async {
-    final courts = await _controller.getCourtsForFacility(widget.facility.facilityID).first;
+    final courts = await _controller
+        .getCourtsForFacility(widget.facility.facilityID)
+        .first;
 
     setState(() {
       _facilityName = widget.facility.facilityName;
@@ -75,9 +79,17 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
 
     if (updatedCourt != null) {
       setState(() {
-        _courts[index] = updatedCourt;
+        _courts[index] = updatedCourt; // Update the court in the local list
+        _updateRemainingCourtsMessage(); // Update the UI with the new court data
         _checkCapacityValidity();
       });
+
+      // Save the updated court in Firestore
+      try {
+        await _controller.updateCourt(widget.facility.facilityID, updatedCourt);
+      } catch (e) {
+        _showAlertDialog('Error', 'Failed to update court: $e', false);
+      }
     }
   }
 
@@ -92,7 +104,8 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
     final remainingCourts = _capacity - _courts.length;
     setState(() {
       if (remainingCourts > 0) {
-        _remainingCourtsMessage = 'You need to add $remainingCourts more court(s).';
+        _remainingCourtsMessage =
+            'You need to add $remainingCourts more court(s).';
       } else {
         _remainingCourtsMessage = '';
       }
@@ -108,7 +121,8 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       if (_courts.length < _capacity) {
-        _showAlertDialog('Validation Error', 'You cannot have less courts than the capacity.', false);
+        _showAlertDialog('Validation Error',
+            'You cannot have fewer courts than the capacity.', false);
         return;
       }
 
@@ -121,8 +135,8 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
       );
 
       try {
-        // Update facility and courts in Firestore
-        await _controller.updateFacility(updatedFacility); // Update facility
+        // Update facility in Firestore
+        await _controller.updateFacility(updatedFacility);
 
         // Handle courts (add, edit, delete logic)
         for (var court in _courts) {
@@ -130,10 +144,13 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
             // New court
             await _controller.addCourt(widget.facility.facilityID, court);
           } else {
-            // Existing court (handle edits separately if needed)
+            // Existing court
+            await _controller.updateCourt(widget.facility.facilityID, court);
           }
         }
-        _showAlertDialog('Success', 'Facility and courts updated successfully.', true);
+
+        _showAlertDialog(
+            'Success', 'Facility and courts updated successfully.', true);
       } catch (e) {
         _showAlertDialog('Error', 'Failed to update facility: $e', false);
       }
@@ -183,164 +200,194 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Center(
-                    child: _isLoading // Display loader while data is being fetched
-                        ? const CircularProgressIndicator()
-                        : Container(
-                            constraints: BoxConstraints(
-                              maxWidth: 800.0, // Maximum width for the form
-                              minHeight: size.height * 0.4, // Minimum height for the form
-                            ),
-                            padding: const EdgeInsets.all(16.0),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8.0),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 10.0,
-                                  offset: const Offset(0, 5),
+                    child:
+                        _isLoading // Display loader while data is being fetched
+                            ? const CircularProgressIndicator()
+                            : Container(
+                                constraints: BoxConstraints(
+                                  maxWidth: 800.0, // Maximum width for the form
+                                  minHeight: size.height *
+                                      0.4, // Minimum height for the form
                                 ),
-                              ],
-                            ),
-                            child: Form(
-                              key: _formKey,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Center(
-                                      child: Text(
-                                        "Edit Facility",
-                                        style: Theme.of(context).textTheme.titleLarge,
-                                      ),
+                                padding: const EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 10.0,
+                                      offset: const Offset(0, 5),
                                     ),
-                                    const SizedBox(height: 20.0),
-                                    TextFormField(
-                                      decoration: const InputDecoration(
-                                        labelText: 'Facility Name',
-                                      ),
-                                      initialValue: _facilityName,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter a facility name';
-                                        }
-                                        return null;
-                                      },
-                                      onSaved: (value) {
-                                        _facilityName = value!;
-                                      },
-                                    ),
-                                    const SizedBox(height: 20.0),
-                                    Row(
+                                  ],
+                                ),
+                                child: Form(
+                                  key: _formKey,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Expanded(
-                                          child: TextFormField(
-                                            decoration: const InputDecoration(
-                                              labelText: 'Capacity (No. of courts)',
-                                            ),
-                                            keyboardType: TextInputType.number,
-                                            initialValue: _capacity.toString(),
-                                            validator: (value) {
-                                              if (value == null || value.isEmpty) {
-                                                return 'Please enter a capacity';
-                                              }
-                                              if (int.tryParse(value) == null || int.parse(value) <= 0) {
-                                                return 'Please enter a valid capacity';
-                                              }
-                                              return null;
-                                            },
-                                            onChanged: (value) {
-                                              _capacity = int.tryParse(value) ?? 0;
-                                              _checkCapacityValidity();
-                                              _updateRemainingCourtsMessage();
-                                            },
-                                            onSaved: (value) {
-                                              _capacity = int.parse(value!);
-                                            },
+                                        Center(
+                                          child: Text(
+                                            "Edit Facility",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge,
                                           ),
                                         ),
-                                        const SizedBox(width: 20.0),
-                                        ElevatedButton.icon(
-                                          onPressed: _isCapacityValid ? _addCourt : null,
-                                          icon: const Icon(Icons.add),
-                                          label: const Text('Add Court'),
-                                          style: TextButton.styleFrom(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 20.0,
-                                              vertical: size.width < 600 ? 10.0 : 15.0,
+                                        const SizedBox(height: 20.0),
+                                        TextFormField(
+                                          decoration: const InputDecoration(
+                                            labelText: 'Facility Name',
+                                          ),
+                                          initialValue: _facilityName,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter a facility name';
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (value) {
+                                            _facilityName = value!;
+                                          },
+                                        ),
+                                        const SizedBox(height: 20.0),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: TextFormField(
+                                                decoration:
+                                                    const InputDecoration(
+                                                  labelText:
+                                                      'Capacity (No. of courts)',
+                                                ),
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                initialValue:
+                                                    _capacity.toString(),
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Please enter a capacity';
+                                                  }
+                                                  if (int.tryParse(value) ==
+                                                          null ||
+                                                      int.parse(value) <= 0) {
+                                                    return 'Please enter a valid capacity';
+                                                  }
+                                                  return null;
+                                                },
+                                                onChanged: (value) {
+                                                  _capacity =
+                                                      int.tryParse(value) ?? 0;
+                                                  _checkCapacityValidity();
+                                                  _updateRemainingCourtsMessage();
+                                                },
+                                                onSaved: (value) {
+                                                  _capacity = int.parse(value!);
+                                                },
+                                              ),
                                             ),
-                                            backgroundColor: _isCapacityValid ? Colors.green : Colors.grey,
+                                            const SizedBox(width: 20.0),
+                                            ElevatedButton.icon(
+                                              onPressed: _isCapacityValid
+                                                  ? _addCourt
+                                                  : null,
+                                              icon: const Icon(Icons.add),
+                                              label: const Text('Add Court'),
+                                              style: TextButton.styleFrom(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 20.0,
+                                                  vertical: size.width < 600
+                                                      ? 10.0
+                                                      : 15.0,
+                                                ),
+                                                backgroundColor:
+                                                    _isCapacityValid
+                                                        ? Colors.green
+                                                        : Colors.grey,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        if (_remainingCourtsMessage
+                                            .isNotEmpty) ...[
+                                          const SizedBox(height: 10.0),
+                                          Text(
+                                            _remainingCourtsMessage,
+                                            style: const TextStyle(
+                                                color: Colors.red),
+                                          ),
+                                        ],
+                                        const SizedBox(height: 20.0),
+                                        TextFormField(
+                                          decoration: const InputDecoration(
+                                            labelText: 'Description',
+                                          ),
+                                          initialValue: _description,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter a description';
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (value) {
+                                            _description = value!;
+                                          },
+                                        ),
+                                        const SizedBox(height: 20.0),
+                                        const Divider(),
+                                        const SizedBox(height: 20.0),
+                                        Text(
+                                          'Courts:',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium,
+                                        ),
+                                        const SizedBox(height: 10.0),
+                                        ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: _courts.length,
+                                          itemBuilder: (context, index) {
+                                            final court = _courts[index];
+                                            return ListTile(
+                                              title: Text(court.courtName),
+                                              subtitle: Text(court.description),
+                                              trailing: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  IconButton(
+                                                    icon:
+                                                        const Icon(Icons.edit),
+                                                    onPressed: () => _editCourt(
+                                                        court, index),
+                                                  ),
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                        Icons.delete),
+                                                    onPressed: () =>
+                                                        _deleteCourt(index),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        const SizedBox(height: 20.0),
+                                        Center(
+                                          child: ElevatedButton(
+                                            onPressed: _submitForm,
+                                            child: const Text('Save Changes'),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    if (_remainingCourtsMessage.isNotEmpty) ...[
-                                      const SizedBox(height: 10.0),
-                                      Text(
-                                        _remainingCourtsMessage,
-                                        style: const TextStyle(color: Colors.red),
-                                      ),
-                                    ],
-                                    const SizedBox(height: 20.0),
-                                    TextFormField(
-                                      decoration: const InputDecoration(
-                                        labelText: 'Description',
-                                      ),
-                                      initialValue: _description,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter a description';
-                                        }
-                                        return null;
-                                      },
-                                      onSaved: (value) {
-                                        _description = value!;
-                                      },
-                                    ),
-                                    const SizedBox(height: 20.0),
-                                    const Divider(),
-                                    const SizedBox(height: 20.0),
-                                    Text(
-                                      'Courts:',
-                                      style: Theme.of(context).textTheme.titleMedium,
-                                    ),
-                                    const SizedBox(height: 10.0),
-                                    ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: _courts.length,
-                                      itemBuilder: (context, index) {
-                                        final court = _courts[index];
-                                        return ListTile(
-                                          title: Text(court.courtName),
-                                          subtitle: Text(court.description),
-                                          trailing: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              IconButton(
-                                                icon: const Icon(Icons.edit),
-                                                onPressed: () => _editCourt(court, index),
-                                              ),
-                                              IconButton(
-                                                icon: const Icon(Icons.delete),
-                                                onPressed: () => _deleteCourt(index),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    const SizedBox(height: 20.0),
-                                    Center(
-                                      child: ElevatedButton(
-                                        onPressed: _submitForm,
-                                        child: const Text('Save Changes'),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
                   ),
                 ),
               ],

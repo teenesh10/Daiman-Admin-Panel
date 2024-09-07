@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:admin_panel/models/court.dart';
 
@@ -14,28 +16,28 @@ class _EditCourtPageState extends State<EditCourtPage> {
   final _formKey = GlobalKey<FormState>();
   late String _courtName;
   late String _description;
+  late bool _availability;
 
   @override
   void initState() {
     super.initState();
     _courtName = widget.court.courtName;
     _description = widget.court.description;
+    _availability = widget.court.availability;
   }
 
-void _submitForm() {
-  if (_formKey.currentState!.validate()) {
-    _formKey.currentState!.save();
-    final updatedCourt = Court(
-      courtID: widget.court.courtID,
-      courtName: _courtName,
-      description: _description,
-      availability: widget.court.availability, // Ensure this matches the expected type
-    );
-    Navigator.of(context).pop(updatedCourt);
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      final updatedCourt = Court(
+        courtID: widget.court.courtID,
+        courtName: _courtName,
+        description: _description,
+        availability: _availability,
+      );
+      Navigator.of(context).pop(updatedCourt);
+    }
   }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +74,18 @@ void _submitForm() {
               onSaved: (value) {
                 _description = value!;
               },
+            ),
+            const SizedBox(height: 20.0),
+            SwitchListTile(
+              title: const Text('Availability'),
+              value: _availability,
+              onChanged: (value) {
+                setState(() {
+                  _availability = value;
+                });
+              },
+              activeColor: Colors.green,
+              inactiveThumbColor: Colors.red,
             ),
           ],
         ),

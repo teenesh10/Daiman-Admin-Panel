@@ -14,6 +14,26 @@ class ManageFacilityController {
     });
   }
 
+   // Fetch details of a specific facility
+  Future<Facility> getFacilityDetails(String facilityId) async {
+    final doc = await _firestore.collection('facility').doc(facilityId).get();
+    return Facility.fromFirestore(doc);
+  }
+
+  // Add a new facility and return the document reference
+  Future<DocumentReference> addFacility(Facility facility) async {
+    return await _firestore.collection('facility').add(facility.toFirestore());
+  }
+
+
+  // Update an existing facility
+  Future<void> updateFacility(Facility updatedFacility) async {
+    await _firestore
+        .collection('facility')
+        .doc(updatedFacility.facilityID) // Ensure that Facility model has an id field
+        .update(updatedFacility.toFirestore());
+  }
+
   // Delete a specific facility
   Future<void> deleteFacility(String facilityId) async {
     // Delete all courts under the facility first
@@ -54,6 +74,15 @@ class ManageFacilityController {
         .add(court.toFirestore());
   }
 
+   Future<void> updateCourt(String facilityId, Court updatedCourt) async {
+    await _firestore
+        .collection('facility')
+        .doc(facilityId)
+        .collection('court')
+        .doc(updatedCourt.courtID)
+        .update(updatedCourt.toFirestore());
+  }
+
   // Delete a specific court
   Future<void> deleteCourt(String facilityId, String courtId) async {
     await _firestore
@@ -62,25 +91,5 @@ class ManageFacilityController {
         .collection('court')
         .doc(courtId)
         .delete();
-  }
-
-  // Fetch details of a specific facility
-  Future<Facility> getFacilityDetails(String facilityId) async {
-    final doc = await _firestore.collection('facility').doc(facilityId).get();
-    return Facility.fromFirestore(doc);
-  }
-
-  // Add a new facility and return the document reference
-  Future<DocumentReference> addFacility(Facility facility) async {
-    return await _firestore.collection('facility').add(facility.toFirestore());
-  }
-
-
-  // Update an existing facility
-  Future<void> updateFacility(Facility updatedFacility) async {
-    await _firestore
-        .collection('facility')
-        .doc(updatedFacility.facilityID) // Ensure that Facility model has an id field
-        .update(updatedFacility.toFirestore());
   }
 }
