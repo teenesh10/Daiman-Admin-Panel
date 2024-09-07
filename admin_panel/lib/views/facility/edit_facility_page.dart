@@ -97,6 +97,7 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
     setState(() {
       _courts.removeAt(index);
       _updateRemainingCourtsMessage();
+      _checkCapacityValidity();
     });
   }
 
@@ -113,8 +114,22 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
   }
 
   void _checkCapacityValidity() {
+    print(
+        'Courts length: ${_courts.length}, Capacity: $_capacity'); // Debugging line
     setState(() {
-      _isCapacityValid = _capacity > 0 && _courts.length <= _capacity;
+      if (_capacity > _courts.length) {
+        final remainingCourts = _capacity - _courts.length;
+        _remainingCourtsMessage =
+            'You need to add $remainingCourts more court(s).';
+        _isCapacityValid = false;
+      } else if (_capacity < _courts.length) {
+        final excessCourts = _courts.length - _capacity;
+        _remainingCourtsMessage = 'You need to remove $excessCourts court(s).';
+        _isCapacityValid = false;
+      } else {
+        _remainingCourtsMessage = '';
+        _isCapacityValid = true;
+      }
     });
   }
 
@@ -292,9 +307,10 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
                                             ),
                                             const SizedBox(width: 20.0),
                                             ElevatedButton.icon(
-                                              onPressed: _isCapacityValid
+                                              onPressed: _capacity >
+                                                      _courts.length
                                                   ? _addCourt
-                                                  : null,
+                                                  : null, // Enable when more courts are needed
                                               icon: const Icon(Icons.add),
                                               label: const Text('Add Court'),
                                               style: TextButton.styleFrom(
@@ -305,7 +321,7 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
                                                       : 15.0,
                                                 ),
                                                 backgroundColor:
-                                                    _isCapacityValid
+                                                    _capacity > _courts.length
                                                         ? Colors.green
                                                         : Colors.grey,
                                               ),
@@ -379,7 +395,9 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
                                         const SizedBox(height: 20.0),
                                         Center(
                                           child: ElevatedButton(
-                                            onPressed: _submitForm,
+                                            onPressed: _isCapacityValid
+                                                ? _submitForm
+                                                : null, // Disable if not valid
                                             child: const Text('Save Changes'),
                                           ),
                                         ),
