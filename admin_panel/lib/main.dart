@@ -5,6 +5,7 @@ import 'package:admin_panel/views/dashboard/dashboard.dart';
 import 'package:admin_panel/views/facility/add_facility_page.dart';
 import 'package:admin_panel/views/facility/court/add_court_page.dart';
 import 'package:admin_panel/views/facility/view_facility_page.dart';
+import 'package:admin_panel/views/facility_rates/view_facility_rates.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
- @override
+  @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
@@ -60,6 +61,8 @@ class MyApp extends StatelessWidget {
         return MaterialPageRoute(builder: (_) => const AddFacilityPage());
       case '/add_court':
         return MaterialPageRoute(builder: (_) => const AddCourtPage());
+      case '/facility_rates':
+        return MaterialPageRoute(builder: (_) => const ViewFacilityRates());
       // Add more routes here
       default:
         return MaterialPageRoute(

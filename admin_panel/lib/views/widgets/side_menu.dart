@@ -43,8 +43,8 @@ class SideMenu extends StatelessWidget {
             title: "Facility Rates",
             svgSrc: "assets/icons/menu_task.svg",
             press: () {
-              authController.setPage("Task"); // Update the current page
-              Navigator.pushNamed(context, '/task'); // Navigate to task page
+              authController.setPage("Facility Rates"); // Update the current page
+              Navigator.pushNamed(context, '/facility_rates'); // Navigate to task page
             },
           ),
           DrawerListTile(
