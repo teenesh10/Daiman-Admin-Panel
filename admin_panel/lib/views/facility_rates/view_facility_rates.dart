@@ -1,5 +1,6 @@
 import 'package:admin_panel/controllers/manage_fee_controller.dart';
 import 'package:admin_panel/models/fee.dart';
+import 'package:admin_panel/views/facility_rates/add_facility_rates.dart';
 import 'package:admin_panel/views/widgets/facility_selection.dart';
 import 'package:admin_panel/views/widgets/header.dart';
 import 'package:admin_panel/views/widgets/side_menu.dart';
@@ -26,6 +27,17 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
     setState(() {
       selectedFacilityID = facilityID;
     });
+  }
+
+  void _showAddFacilityRateDialog(
+      BuildContext context, String selectedFacilityID) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent closing by tapping outside
+      builder: (BuildContext context) {
+        return AddFacilityRatePage(selectedFacilityID: selectedFacilityID);
+      },
+    );
   }
 
   void _showDeleteConfirmation(BuildContext context, Fee fee) {
@@ -56,6 +68,8 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Row(
         children: [
@@ -87,12 +101,22 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                   // Show Add button only when no rates exist
                                   return ElevatedButton.icon(
                                     onPressed: () {
-                                      // Logic for adding new fee
+                                      _showAddFacilityRateDialog(
+                                          context, selectedFacilityID!);
                                       _controller
                                           .addFee(selectedFacilityID! as Fee);
                                     },
                                     icon: const Icon(Icons.add),
-                                    label: const Text('Add Rate'),
+                                    label: const Text('Add Fee'),
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 20.0,
+                                        vertical:
+                                            size.width < 600 ? 10.0 : 15.0,
+                                      ),
+                                      backgroundColor:
+                                          const Color.fromARGB(255, 55, 255, 0),
+                                    ),
                                   );
                                 }
                                 return const SizedBox
@@ -233,7 +257,8 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                               },
                                             ),
                                             IconButton(
-                                              icon: const Icon(Icons.delete),
+                                              icon: const Icon(Icons.delete,
+                                                  color: Colors.red),
                                               onPressed: () {
                                                 _showDeleteConfirmation(
                                                     context, fee);

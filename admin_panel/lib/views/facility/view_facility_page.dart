@@ -251,7 +251,7 @@ class _FacilityViewState extends State<FacilityView> {
                                                       facility.facilityID,
                                                   onClose: () {
                                                     Navigator.of(context)
-                                                        .pop(); // Close the FacilityInfoPage dialog
+                                                        .pop(); 
                                                   },
                                                 );
                                               },
