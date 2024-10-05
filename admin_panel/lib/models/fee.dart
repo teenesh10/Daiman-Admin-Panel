@@ -5,12 +5,14 @@ class Fee {
   final String facilityID;
   final double weekdayRate;
   final double weekendRate;
+  final String description;
 
   Fee({
     required this.feeID,
     required this.facilityID,
     required this.weekdayRate,
     required this.weekendRate,
+    required this.description,
   });
 
   // Convert Firestore document to Fee object with safe parsing
@@ -34,6 +36,7 @@ class Fee {
       facilityID: data['facilityID'] ?? 'Unknown',
       weekdayRate: weekdayRate,
       weekendRate: weekendRate,
+      description: data['description'],
     );
   }
 
@@ -43,6 +46,7 @@ class Fee {
       'facilityID': facilityID,
       'weekdayRate': weekdayRate,
       'weekendRate': weekendRate,
+      'description': description,
     };
   }
 }

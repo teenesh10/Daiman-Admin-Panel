@@ -161,7 +161,7 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                     label: Padding(
                                       padding: EdgeInsets.all(8.0),
                                       child: Text(
-                                        "Weekday Rate (THB)",
+                                        "Weekday Rate (MYR/1hr)",
                                         style: TextStyle(
                                             fontSize: 18.0,
                                             fontWeight: FontWeight.bold),
@@ -172,7 +172,18 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                     label: Padding(
                                       padding: EdgeInsets.all(8.0),
                                       child: Text(
-                                        "Weekend Rate (THB)",
+                                        "Weekend Rate (MYR/1hr)",
+                                        style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "Description",
                                         style: TextStyle(
                                             fontSize: 18.0,
                                             fontWeight: FontWeight.bold),
@@ -205,6 +216,10 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                       )),
                                       DataCell(Text(
                                         fee.weekendRate.toString(),
+                                        style: const TextStyle(fontSize: 16.0),
+                                      )),
+                                      DataCell(Text(
+                                        fee.description,
                                         style: const TextStyle(fontSize: 16.0),
                                       )),
                                       DataCell(
