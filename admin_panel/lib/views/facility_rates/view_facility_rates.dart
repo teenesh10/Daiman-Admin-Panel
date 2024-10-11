@@ -1,6 +1,7 @@
 import 'package:admin_panel/controllers/manage_fee_controller.dart';
 import 'package:admin_panel/models/fee.dart';
 import 'package:admin_panel/views/facility_rates/add_facility_rates.dart';
+import 'package:admin_panel/views/facility_rates/edit_facility_rates.dart';
 import 'package:admin_panel/views/widgets/facility_selection.dart';
 import 'package:admin_panel/views/widgets/header.dart';
 import 'package:admin_panel/views/widgets/side_menu.dart';
@@ -235,11 +236,11 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                         style: const TextStyle(fontSize: 16.0),
                                       )),
                                       DataCell(Text(
-                                        fee.weekdayRate.toString(),
+                                        'RM ${fee.weekdayRate.toString()}',
                                         style: const TextStyle(fontSize: 16.0),
                                       )),
                                       DataCell(Text(
-                                        fee.weekendRate.toString(),
+                                        'RM ${fee.weekendRate.toString()}',
                                         style: const TextStyle(fontSize: 16.0),
                                       )),
                                       DataCell(Text(
@@ -251,9 +252,23 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                           children: [
                                             IconButton(
                                               icon: const Icon(Icons.edit),
-                                              onPressed: () {
-                                                // Logic for editing fee
-                                                _controller.updateFee(fee);
+                                              onPressed: () async {
+                                                final updatedFee =
+                                                    await showDialog<Fee>(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return EditFacilityRatePage(
+                                                        fee:
+                                                            fee); // Pass the current fee to the edit page
+                                                  },
+                                                );
+
+                                                if (updatedFee != null) {
+                                                  // Update the fee if the user has made changes
+                                                  _controller
+                                                      .updateFee(updatedFee);
+                                                }
                                               },
                                             ),
                                             IconButton(

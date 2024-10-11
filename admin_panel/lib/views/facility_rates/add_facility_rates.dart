@@ -108,7 +108,7 @@ class _AddFacilityRatePageState extends State<AddFacilityRatePage> {
                   decoration: const InputDecoration(
                     labelText: 'Description',
                   ),
-                  maxLines: 3,
+                  maxLines: 2,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a description';

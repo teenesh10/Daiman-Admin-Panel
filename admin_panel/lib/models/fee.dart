@@ -16,29 +16,35 @@ class Fee {
   });
 
   // Convert Firestore document to Fee object with safe parsing
-  factory Fee.fromSnapshot(DocumentSnapshot snapshot) {
-    final data = snapshot.data() as Map<String, dynamic>?;
+factory Fee.fromSnapshot(DocumentSnapshot snapshot) {
+  final data = snapshot.data() as Map<String, dynamic>?;
 
-    if (data == null) {
-      throw Exception("Document data is null for Fee with ID: ${snapshot.id}");
-    }
-
-    final weekdayRate = (data['weekdayRate'] is String)
-        ? double.tryParse(data['weekdayRate']) ?? 0.0
-        : (data['weekdayRate'] ?? 0.0).toDouble();
-
-    final weekendRate = (data['weekendRate'] is String)
-        ? double.tryParse(data['weekendRate']) ?? 0.0
-        : (data['weekendRate'] ?? 0.0).toDouble();
-
-    return Fee(
-      feeID: snapshot.id,
-      facilityID: data['facilityID'] ?? 'Unknown',
-      weekdayRate: weekdayRate,
-      weekendRate: weekendRate,
-      description: data['description'],
-    );
+  if (data == null) {
+    throw Exception("Document data is null for Fee with ID: ${snapshot.id}");
   }
+
+  // Extract facilityID from the document path
+  final facilityID = snapshot.reference.parent.parent?.id ?? 'Unknown';
+
+
+  final weekdayRate = (data['weekdayRate'] is String)
+      ? double.tryParse(data['weekdayRate']) ?? 0.0
+      : (data['weekdayRate'] ?? 0.0).toDouble();
+
+  final weekendRate = (data['weekendRate'] is String)
+      ? double.tryParse(data['weekendRate']) ?? 0.0
+      : (data['weekendRate'] ?? 0.0).toDouble();
+
+  return Fee(
+    feeID: snapshot.id,
+    facilityID: facilityID, // Now we derive the facilityID
+    weekdayRate: weekdayRate,
+    weekendRate: weekendRate,
+    description: data['description'] ?? '', // Safely retrieve description
+  );
+}
+
+
 
   // Convert Fee object to a map to send to Firestore
   Map<String, dynamic> toMap() {

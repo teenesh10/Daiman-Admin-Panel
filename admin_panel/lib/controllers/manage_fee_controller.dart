@@ -26,9 +26,9 @@ class ManageFeeController {
 
   // Update an existing facility rate in the subcollection
   Future<void> updateFee(Fee fee) async {
-    await _firestore
+    await FirebaseFirestore.instance
         .collection('facility')
-        .doc(fee.facilityID)
+        .doc(fee.facilityID) // This will now be correctly retrieved
         .collection('fee')
         .doc(fee.feeID)
         .update(fee.toMap());
