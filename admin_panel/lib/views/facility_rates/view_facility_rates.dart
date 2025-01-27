@@ -169,7 +169,8 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                 headingRowHeight: 80.0,
                                 headingRowColor:
                                     MaterialStateProperty.resolveWith(
-                                        (states) => Colors.grey.shade200),
+                                  (states) => Colors.grey.shade200,
+                                ),
                                 columns: const [
                                   DataColumn(
                                     label: Padding(
@@ -186,7 +187,7 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                     label: Padding(
                                       padding: EdgeInsets.all(8.0),
                                       child: Text(
-                                        "Weekday Rate (MYR/1hr)",
+                                        "Weekday Rate (Before 6 PM)",
                                         style: TextStyle(
                                             fontSize: 18.0,
                                             fontWeight: FontWeight.bold),
@@ -197,7 +198,29 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                     label: Padding(
                                       padding: EdgeInsets.all(8.0),
                                       child: Text(
-                                        "Weekend Rate (MYR/1hr)",
+                                        "Weekday Rate (After 6 PM)",
+                                        style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "Weekend Rate (Before 6 PM)",
+                                        style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "Weekend Rate (After 6 PM)",
                                         style: TextStyle(
                                             fontSize: 18.0,
                                             fontWeight: FontWeight.bold),
@@ -231,22 +254,48 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                   final fee = rates[index];
                                   return DataRow(
                                     cells: [
-                                      DataCell(Text(
-                                        (index + 1).toString(),
-                                        style: const TextStyle(fontSize: 16.0),
-                                      )),
-                                      DataCell(Text(
-                                        'RM ${fee.weekdayRate.toString()}',
-                                        style: const TextStyle(fontSize: 16.0),
-                                      )),
-                                      DataCell(Text(
-                                        'RM ${fee.weekendRate.toString()}',
-                                        style: const TextStyle(fontSize: 16.0),
-                                      )),
-                                      DataCell(Text(
-                                        fee.description,
-                                        style: const TextStyle(fontSize: 16.0),
-                                      )),
+                                      DataCell(
+                                        Text(
+                                          (index + 1).toString(),
+                                          style:
+                                              const TextStyle(fontSize: 16.0),
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          'RM ${fee.weekdayRateBefore6.toStringAsFixed(2)}',
+                                          style:
+                                              const TextStyle(fontSize: 16.0),
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          'RM ${fee.weekdayRateAfter6.toStringAsFixed(2)}',
+                                          style:
+                                              const TextStyle(fontSize: 16.0),
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          'RM ${fee.weekendRateBefore6.toStringAsFixed(2)}',
+                                          style:
+                                              const TextStyle(fontSize: 16.0),
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          'RM ${fee.weekendRateAfter6.toStringAsFixed(2)}',
+                                          style:
+                                              const TextStyle(fontSize: 16.0),
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          fee.description,
+                                          style:
+                                              const TextStyle(fontSize: 16.0),
+                                        ),
+                                      ),
                                       DataCell(
                                         Row(
                                           children: [
@@ -259,13 +308,11 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                                   builder:
                                                       (BuildContext context) {
                                                     return EditFacilityRatePage(
-                                                        fee:
-                                                            fee); // Pass the current fee to the edit page
+                                                        fee: fee);
                                                   },
                                                 );
 
                                                 if (updatedFee != null) {
-                                                  // Update the fee if the user has made changes
                                                   _controller
                                                       .updateFee(updatedFee);
                                                 }

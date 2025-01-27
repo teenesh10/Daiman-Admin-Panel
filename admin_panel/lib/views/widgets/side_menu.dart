@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:admin_panel/controllers/auth_controller.dart'; // Import AuthController
+import 'package:admin_panel/controllers/auth_controller.dart'; 
 
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
@@ -51,8 +51,8 @@ class SideMenu extends StatelessWidget {
             title: "Bookings",
             svgSrc: "assets/icons/menu_doc.svg",
             press: () {
-              authController.setPage("Documents"); // Update the current page
-              Navigator.pushNamed(context, '/documents'); // Navigate to documents page
+              authController.setPage("Bookings"); // Update the current page
+              Navigator.pushNamed(context, '/bookings'); // Navigate to documents page
             },
           ),
           DrawerListTile(

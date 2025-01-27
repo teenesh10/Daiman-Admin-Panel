@@ -17,19 +17,21 @@ class _EditFacilityRatePageState extends State<EditFacilityRatePage> {
   final _formKey = GlobalKey<FormState>();
   final ManageFeeController _controller = ManageFeeController();
 
-  late double _weekdayRate;
-  late double _weekendRate;
+  late double _weekdayRateBefore6;
+  late double _weekdayRateAfter6;
+  late double _weekendRateBefore6;
+  late double _weekendRateAfter6;
   late String _description;
-  late String _facilityID;
 
   @override
   void initState() {
     super.initState();
     // Initialize form fields with the existing fee data
-    _weekdayRate = widget.fee.weekdayRate;
-    _weekendRate = widget.fee.weekendRate;
+    _weekdayRateBefore6 = widget.fee.weekdayRateBefore6;
+    _weekdayRateAfter6 = widget.fee.weekdayRateAfter6;
+    _weekendRateBefore6 = widget.fee.weekendRateBefore6;
+    _weekendRateAfter6 = widget.fee.weekendRateAfter6;
     _description = widget.fee.description;
-    _facilityID = widget.fee.facilityID;
   }
 
   void _submitForm() {
@@ -37,18 +39,26 @@ class _EditFacilityRatePageState extends State<EditFacilityRatePage> {
       _formKey.currentState!.save();
 
       final updatedFee = Fee(
-        feeID: widget.fee.feeID, // Use the existing feeID
-        facilityID: _facilityID, // Use the initialized facilityID
-        weekdayRate: _weekdayRate,
-        weekendRate: _weekendRate,
+        feeID: widget.fee.feeID,
+        facilityID: widget.fee.facilityID,
+        weekdayRateBefore6: _weekdayRateBefore6,
+        weekdayRateAfter6: _weekdayRateAfter6,
+        weekendRateBefore6: _weekendRateBefore6,
+        weekendRateAfter6: _weekendRateAfter6,
         description: _description,
       );
 
       // Submit updated fee to Firestore
-      _controller.updateFee(updatedFee);
-
-      Navigator.pop(
-          context, updatedFee); // Return updated fee object after submission
+      _controller.updateFee(updatedFee).then((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Facility rate updated successfully.')),
+        );
+        Navigator.pop(context, updatedFee);
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating facility rate: $error')),
+        );
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill all required fields.')),
@@ -82,54 +92,86 @@ class _EditFacilityRatePageState extends State<EditFacilityRatePage> {
                 ),
                 const SizedBox(height: 20.0),
                 TextFormField(
-                  initialValue: _weekdayRate
-                      .toString(), // Prepopulate with current weekday rate
+                  initialValue: _weekdayRateBefore6.toString(),
                   decoration: const InputDecoration(
-                    labelText: 'Weekday Rate (MYR/1hr)',
-                    prefixText: 'RM ', // 'RM' before input
+                    labelText: 'Weekday Rate (Before 6PM)',
+                    prefixText: 'RM ',
                   ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a weekday rate';
+                      return 'Please enter a valid rate';
                     }
                     return null;
                   },
                   onSaved: (value) {
-                    _weekdayRate = double.tryParse(value!) ?? 0.0;
+                    _weekdayRateBefore6 = double.tryParse(value!) ?? 0.0;
                   },
                 ),
                 const SizedBox(height: 20.0),
                 TextFormField(
-                  initialValue: _weekendRate
-                      .toString(), // Prepopulate with current weekend rate
+                  initialValue: _weekdayRateAfter6.toString(),
                   decoration: const InputDecoration(
-                    labelText: 'Weekend Rate (MYR/1hr)',
-                    prefixText: 'RM ', // 'RM' before input
+                    labelText: 'Weekday Rate (After 6PM)',
+                    prefixText: 'RM ',
                   ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a weekend rate';
+                      return 'Please enter a valid rate';
                     }
                     return null;
                   },
                   onSaved: (value) {
-                    _weekendRate = double.tryParse(value!) ?? 0.0;
+                    _weekdayRateAfter6 = double.tryParse(value!) ?? 0.0;
                   },
                 ),
                 const SizedBox(height: 20.0),
-                // Edit the description field
                 TextFormField(
-                  initialValue:
-                      _description, // Prepopulate with current description
+                  initialValue: _weekendRateBefore6.toString(),
+                  decoration: const InputDecoration(
+                    labelText: 'Weekend Rate (Before 6PM)',
+                    prefixText: 'RM ',
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a valid rate';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _weekendRateBefore6 = double.tryParse(value!) ?? 0.0;
+                  },
+                ),
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  initialValue: _weekendRateAfter6.toString(),
+                  decoration: const InputDecoration(
+                    labelText: 'Weekend Rate (After 6PM)',
+                    prefixText: 'RM ',
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a valid rate';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _weekendRateAfter6 = double.tryParse(value!) ?? 0.0;
+                  },
+                ),
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  initialValue: _description,
                   decoration: const InputDecoration(
                     labelText: 'Description',
                   ),
                   maxLines: 2,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a description';
+                      return 'Please enter a valid description';
                     }
                     return null;
                   },
@@ -145,7 +187,7 @@ class _EditFacilityRatePageState extends State<EditFacilityRatePage> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      style: TextButton.styleFrom(
+                      style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(
                           horizontal: 20.0,
                           vertical: size.width < 600 ? 10.0 : 15.0,
@@ -156,7 +198,7 @@ class _EditFacilityRatePageState extends State<EditFacilityRatePage> {
                     ),
                     ElevatedButton(
                       onPressed: _submitForm,
-                      style: TextButton.styleFrom(
+                      style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(
                           horizontal: 20.0,
                           vertical: size.width < 600 ? 10.0 : 15.0,
