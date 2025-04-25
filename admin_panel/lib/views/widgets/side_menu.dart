@@ -63,22 +63,22 @@ class SideMenu extends StatelessWidget {
               Navigator.pushNamed(context, '/store'); // Navigate to store page
             },
           ),
-          DrawerListTile(
-            title: "Banners",
-            svgSrc: "assets/icons/menu_setting.svg",
-            press: () {
-              authController.setPage("Settings"); // Update the current page
-              Navigator.pushNamed(context, '/settings'); // Navigate to settings page
-            },
-          ),
-          DrawerListTile(
-            title: "Events",
-            svgSrc: "assets/icons/menu_setting.svg",
-            press: () {
-              authController.setPage("Settings"); // Update the current page
-              Navigator.pushNamed(context, '/settings'); // Navigate to settings page
-            },
-          ),
+          // DrawerListTile(
+          //   title: "Banners",
+          //   svgSrc: "assets/icons/menu_setting.svg",
+          //   press: () {
+          //     authController.setPage("Settings"); // Update the current page
+          //     Navigator.pushNamed(context, '/settings'); // Navigate to settings page
+          //   },
+          // ),
+          // DrawerListTile(
+          //   title: "Events",
+          //   svgSrc: "assets/icons/menu_setting.svg",
+          //   press: () {
+          //     authController.setPage("Settings"); // Update the current page
+          //     Navigator.pushNamed(context, '/settings'); // Navigate to settings page
+          //   },
+          // ),
         ],
       ),
     );

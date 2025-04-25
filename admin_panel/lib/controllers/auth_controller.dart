@@ -153,13 +153,14 @@ class AuthController with ChangeNotifier {
     notifyListeners();
   }
 
-   // Method to update the current page
+  // Method to update the current page
   void setPage(String pageName) {
-    _currentPage = pageName;
-    notifyListeners();
+    if (_currentPage != pageName) {
+      _currentPage = pageName;
+      notifyListeners(); // Trigger rebuild only when needed
+    }
   }
 
-  
   @override
   void dispose() {
     // Dispose controllers when they are no longer needed
