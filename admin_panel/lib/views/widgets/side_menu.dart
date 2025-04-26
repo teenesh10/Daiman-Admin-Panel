@@ -1,84 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:admin_panel/controllers/auth_controller.dart'; 
+import 'package:admin_panel/controllers/auth_controller.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final authController = context.watch<AuthController>(); // Get AuthController
+    final authController =
+        context.watch<AuthController>(); // Get AuthController
 
     return Drawer(
       backgroundColor: Colors.black,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(0)), // Remove rounded corners
+        borderRadius: BorderRadius.all(Radius.circular(0)),
       ),
       child: ListView(
         children: [
           const DrawerHeader(
             child: CircleAvatar(
               radius: 40,
-              backgroundImage: AssetImage('assets/logos/small_logo.png'), // Replace with your logo asset
+              backgroundImage: AssetImage('assets/logos/small_logo.png'),
             ),
           ),
           DrawerListTile(
             title: "Dashboard",
             svgSrc: "assets/icons/menu_dashboard.svg",
             press: () {
-              authController.setPage("Dashboard"); // Update the current page
-              Navigator.pushNamed(context, '/dashboard'); // Navigate to the dashboard page
+              authController.setPage("Dashboard");
+              Navigator.pushNamed(context, '/dashboard');
             },
           ),
           DrawerListTile(
             title: "Facilities",
             svgSrc: "assets/icons/menu_tran.svg",
             press: () {
-              authController.setPage("Facilities"); // Update the current page
-              Navigator.pushNamed(context, '/facilities'); // Navigate to facilities page
+              authController.setPage("Facilities");
+              Navigator.pushNamed(context, '/facilities');
             },
           ),
           DrawerListTile(
             title: "Facility Rates",
             svgSrc: "assets/icons/menu_task.svg",
             press: () {
-              authController.setPage("Facility Rates"); // Update the current page
-              Navigator.pushNamed(context, '/facility_rates'); // Navigate to task page
+              authController.setPage("Facility Rates");
+              Navigator.pushNamed(context, '/facility_rates');
             },
           ),
           DrawerListTile(
             title: "Bookings",
             svgSrc: "assets/icons/menu_doc.svg",
             press: () {
-              authController.setPage("Bookings"); // Update the current page
-              Navigator.pushNamed(context, '/bookings'); // Navigate to documents page
+              authController.setPage("Bookings");
+              Navigator.pushNamed(context, '/bookings');
             },
           ),
           DrawerListTile(
             title: "Queries",
             svgSrc: "assets/icons/menu_store.svg",
             press: () {
-              authController.setPage("Store"); // Update the current page
-              Navigator.pushNamed(context, '/store'); // Navigate to store page
+              authController.setPage("Queries");
+              Navigator.pushNamed(context, '/queries');
             },
           ),
-          // DrawerListTile(
-          //   title: "Banners",
-          //   svgSrc: "assets/icons/menu_setting.svg",
-          //   press: () {
-          //     authController.setPage("Settings"); // Update the current page
-          //     Navigator.pushNamed(context, '/settings'); // Navigate to settings page
-          //   },
-          // ),
-          // DrawerListTile(
-          //   title: "Events",
-          //   svgSrc: "assets/icons/menu_setting.svg",
-          //   press: () {
-          //     authController.setPage("Settings"); // Update the current page
-          //     Navigator.pushNamed(context, '/settings'); // Navigate to settings page
-          //   },
-          // ),
         ],
       ),
     );
