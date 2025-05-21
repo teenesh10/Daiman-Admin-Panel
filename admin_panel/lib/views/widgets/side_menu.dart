@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:admin_panel/controllers/auth_controller.dart';
 
@@ -8,92 +7,131 @@ class SideMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authController =
-        context.watch<AuthController>(); // Get AuthController
+    final authController = context.watch<AuthController>();
+    final currentPage = authController.currentPage;
 
     return Drawer(
       backgroundColor: Colors.black,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(0)),
+        borderRadius: BorderRadius.zero,
       ),
-      child: ListView(
-        children: [
-          const DrawerHeader(
-            child: CircleAvatar(
-              radius: 40,
-              backgroundImage: AssetImage('assets/logos/small_logo.png'),
+      child: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: const CircleAvatar(
+                radius: 40,
+                backgroundImage: AssetImage('assets/logos/small_logo.png'),
+              ),
             ),
-          ),
-          DrawerListTile(
-            title: "Dashboard",
-            svgSrc: "assets/icons/menu_dashboard.svg",
-            press: () {
-              authController.setPage("Dashboard");
-              Navigator.pushNamed(context, '/dashboard');
-            },
-          ),
-          DrawerListTile(
-            title: "Facilities",
-            svgSrc: "assets/icons/menu_tran.svg",
-            press: () {
-              authController.setPage("Facilities");
-              Navigator.pushNamed(context, '/facilities');
-            },
-          ),
-          DrawerListTile(
-            title: "Facility Rates",
-            svgSrc: "assets/icons/menu_task.svg",
-            press: () {
-              authController.setPage("Facility Rates");
-              Navigator.pushNamed(context, '/facility_rates');
-            },
-          ),
-          DrawerListTile(
-            title: "Bookings",
-            svgSrc: "assets/icons/menu_doc.svg",
-            press: () {
-              authController.setPage("Bookings");
-              Navigator.pushNamed(context, '/bookings');
-            },
-          ),
-          DrawerListTile(
-            title: "Queries",
-            svgSrc: "assets/icons/menu_store.svg",
-            press: () {
-              authController.setPage("Queries");
-              Navigator.pushNamed(context, '/queries');
-            },
-          ),
-        ],
+
+            // Full-width divider below logo
+            const Divider(
+              color: Colors.white24,
+              thickness: 1,
+              height: 1,
+            ),
+
+            const SizedBox(height: 12),
+
+            // Menu Items
+            DrawerListTile(
+              title: "Dashboard",
+              icon: Icons.dashboard_outlined,
+              selected: currentPage == "Dashboard",
+              onTap: () {
+                authController.setPage("Dashboard");
+                Navigator.pushNamed(context, '/dashboard');
+              },
+            ),
+            DrawerListTile(
+              title: "Facilities",
+              icon: Icons.sports_soccer,
+              selected: currentPage == "Facilities",
+              onTap: () {
+                authController.setPage("Facilities");
+                Navigator.pushNamed(context, '/facilities');
+              },
+            ),
+            DrawerListTile(
+              title: "Facility Rates",
+              icon: Icons.attach_money_outlined,
+              selected: currentPage == "Facility Rates",
+              onTap: () {
+                authController.setPage("Facility Rates");
+                Navigator.pushNamed(context, '/facility_rates');
+              },
+            ),
+            DrawerListTile(
+              title: "Bookings",
+              icon: Icons.event_available_outlined,
+              selected: currentPage == "Bookings",
+              onTap: () {
+                authController.setPage("Bookings");
+                Navigator.pushNamed(context, '/bookings');
+              },
+            ),
+            DrawerListTile(
+              title: "Queries",
+              icon: Icons.question_answer_outlined,
+              selected: currentPage == "Queries",
+              onTap: () {
+                authController.setPage("Queries");
+                Navigator.pushNamed(context, '/queries');
+              },
+            ),
+
+            const Spacer(),
+
+            const Padding(
+              padding: EdgeInsets.only(bottom: 16.0),
+              child: Text(
+                '© 2025 Daiman Sri Skudai',
+                style: TextStyle(
+                  color: Colors.white38,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 class DrawerListTile extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool selected;
+
   const DrawerListTile({
     super.key,
     required this.title,
-    required this.svgSrc,
-    required this.press,
+    required this.icon,
+    required this.onTap,
+    this.selected = false,
   });
-
-  final String title, svgSrc;
-  final VoidCallback press;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: press,
-      horizontalTitleGap: 0.0,
-      leading: SvgPicture.asset(
-        svgSrc,
-        colorFilter: const ColorFilter.mode(Colors.white54, BlendMode.srcIn),
-        height: 16,
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(color: Colors.white54),
+    return Material(
+      color: selected ? Colors.white10 : Colors.transparent,
+      child: ListTile(
+        onTap: onTap,
+        leading: Icon(
+          icon,
+          color: selected ? Colors.white : Colors.white54,
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: selected ? Colors.white : Colors.white54,
+            fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
       ),
     );
   }

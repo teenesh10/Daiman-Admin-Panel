@@ -47,8 +47,7 @@ class _ManageQueryViewState extends State<ManageQueryView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("Manage Queries",
-              style: Theme.of(context).textTheme.titleLarge),
+          Text("Manage Queries", style: Theme.of(context).textTheme.titleLarge),
           Row(
             children: [
               DropdownButton<String>(
@@ -100,7 +99,21 @@ class _ManageQueryViewState extends State<ManageQueryView> {
           final filteredQueries = snapshot.data!.where((query) {
             final status = query['status'] ?? 'pending';
             return _statusFilter == 'all' || status == _statusFilter;
-          }).toList();
+          }).toList()
+            ..sort((a, b) {
+              // Sort by status: 'pending' first, then 'resolved'
+              final statusA = (a['status'] ?? 'pending') == 'pending' ? 0 : 1;
+              final statusB = (b['status'] ?? 'pending') == 'pending' ? 0 : 1;
+
+              if (statusA != statusB) {
+                return statusA.compareTo(statusB); // pending before resolved
+              }
+
+              // If status is the same, sort by date descending (newest first)
+              final dateA = (a['date'] as Timestamp?)?.toDate() ?? DateTime(0);
+              final dateB = (b['date'] as Timestamp?)?.toDate() ?? DateTime(0);
+              return dateB.compareTo(dateA);
+            });
 
           return SingleChildScrollView(
             scrollDirection: Axis.vertical,

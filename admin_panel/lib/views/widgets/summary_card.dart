@@ -80,7 +80,7 @@ class _SummaryCardsState extends State<SummaryCards> {
     required String label,
     required int count,
   }) {
-    final String display = count == -1 ? "Not available" : count.toString();
+    final String display = count == -1 ? "N/A" : count.toString();
 
     return Expanded(
       child: Container(

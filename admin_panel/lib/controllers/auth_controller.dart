@@ -45,7 +45,6 @@ class AuthController with ChangeNotifier {
       );
 
       final freshToken = await userCredential.user?.getIdToken(true);
-      print("🆕 New token after login: ${freshToken?.substring(0, 20)}...");
 
       // Fetch admin data from Firestore
       DocumentSnapshot adminDoc = await _firestore
