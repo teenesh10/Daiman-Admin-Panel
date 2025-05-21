@@ -1,30 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:admin_panel/controllers/auth_controller.dart';
+import 'package:admin_panel/controllers/manage_facility_controller.dart';
+import 'package:admin_panel/controllers/manage_booking_controller.dart';
+import 'package:admin_panel/models/facility.dart';
+import 'package:admin_panel/models/booking.dart';
 
-class SummaryCards extends StatelessWidget {
+class SummaryCards extends StatefulWidget {
   const SummaryCards({super.key});
+
+  @override
+  State<SummaryCards> createState() => _SummaryCardsState();
+}
+
+class _SummaryCardsState extends State<SummaryCards> {
+  int users = -1;
+
+  final _facilityController = ManageFacilityController();
+  final _bookingController = ManageBookingController();
+  final _authController = AuthController();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUsers();
+  }
+
+  Future<void> _fetchUsers() async {
+    final count = await _authController.getAllUsers();
+    setState(() => users = count);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildSummaryCard(
-          color: Colors.blue,
-          icon: Icons.sports_soccer,
-          label: "Total Facilities",
-          count: 12,
+        // Facility Stream
+        StreamBuilder<List<Facility>>(
+          stream: _facilityController.getFacilities(),
+          builder: (context, snapshot) {
+            final count = snapshot.hasData ? snapshot.data!.length : -1;
+            return _buildSummaryCard(
+              color: Colors.blue,
+              icon: Icons.sports_soccer,
+              label: "Total Facilities",
+              count: count,
+            );
+          },
         ),
-        _buildSummaryCard(
-          color: Colors.green,
-          icon: Icons.event_available,
-          label: "Total Bookings",
-          count: 87,
+
+        // Booking Stream
+        StreamBuilder<List<Booking>>(
+          stream: _bookingController.getBookings(),
+          builder: (context, snapshot) {
+            final count = snapshot.hasData ? snapshot.data!.length : -1;
+            return _buildSummaryCard(
+              color: Colors.green,
+              icon: Icons.event_available,
+              label: "Total Bookings",
+              count: count,
+            );
+          },
         ),
+
+        // User count (static)
         _buildSummaryCard(
           color: Colors.deepPurple,
           icon: Icons.people,
           label: "Total Users",
-          count: 34,
+          count: users,
         ),
       ],
     );
@@ -36,6 +80,8 @@ class SummaryCards extends StatelessWidget {
     required String label,
     required int count,
   }) {
+    final String display = count == -1 ? "Not available" : count.toString();
+
     return Expanded(
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -55,7 +101,7 @@ class SummaryCards extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "$count",
+                  display,
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,

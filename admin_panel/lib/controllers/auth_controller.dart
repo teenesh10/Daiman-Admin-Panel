@@ -44,7 +44,6 @@ class AuthController with ChangeNotifier {
         password: password,
       );
 
-      // NEW: Verify the token works immediately
       final freshToken = await userCredential.user?.getIdToken(true);
       print("🆕 New token after login: ${freshToken?.substring(0, 20)}...");
 
@@ -162,6 +161,15 @@ class AuthController with ChangeNotifier {
     if (_currentPage != pageName) {
       _currentPage = pageName;
       notifyListeners(); // Trigger rebuild only when needed
+    }
+  }
+
+  Future<int> getAllUsers() async {
+    try {
+      final snapshot = await _firestore.collection('user').get();
+      return snapshot.size;
+    } catch (e) {
+      return -1; // Use -1 to indicate error
     }
   }
 
