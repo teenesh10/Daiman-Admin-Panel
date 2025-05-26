@@ -6,7 +6,10 @@ class ManageBookingController {
 
   Stream<List<Booking>> getBookings() {
     return _firestore.collection('booking').snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) => Booking.fromFirestore(doc.data() as DocumentSnapshot<Object?>)).toList();
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        return Booking.fromFirestore(data, doc.id);
+      }).toList();
     });
   }
 }

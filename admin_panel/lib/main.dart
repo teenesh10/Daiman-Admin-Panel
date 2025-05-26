@@ -1,7 +1,7 @@
 import 'package:admin_panel/constants.dart';
 import 'package:admin_panel/controllers/auth_controller.dart';
 import 'package:admin_panel/views/auth/login.dart';
-import 'package:admin_panel/views/booking/booking.dart';
+// import 'package:admin_panel/views/booking/booking.dart';
 import 'package:admin_panel/views/dashboard/dashboard.dart';
 import 'package:admin_panel/views/facility/add_facility_page.dart';
 import 'package:admin_panel/views/facility/court/add_court_page.dart';
@@ -72,8 +72,8 @@ class MyApp extends StatelessWidget {
           builder: (_) =>
               AddFacilityRatePage(selectedFacilityID: selectedFacilityID),
         );
-      case '/bookings':
-        return MaterialPageRoute(builder: (_) => const ManageBookingView());
+      // case '/bookings':
+      //   return MaterialPageRoute(builder: (_) => const ManageBookingView());
       case '/queries':
         return MaterialPageRoute(builder: (_) => const ManageQueryView());
       // Add more routes here

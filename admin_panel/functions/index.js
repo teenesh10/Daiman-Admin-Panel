@@ -6,7 +6,6 @@ const nodemailer = require("nodemailer");
 
 admin.initializeApp();
 
-// Define your secrets (preferred method for Firebase Functions v2)
 const gmailEmail = defineSecret("GMAIL_EMAIL");
 const gmailPassword = defineSecret("GMAIL_PASSWORD");
 
@@ -19,7 +18,7 @@ exports.sendEmailResponse = onRequest(
       return res.status(204).send("");
     }
 
-    // 🔥 Check Firebase Authentication token
+    // Check Firebase Authentication token
     if (!req.headers.authorization?.startsWith("Bearer ")) {
       res.status(403).json({ error: "Unauthorized: Missing Bearer token" });
       return;
@@ -33,7 +32,6 @@ exports.sendEmailResponse = onRequest(
       return;
     }
 
-    // Rest of your email logic...
     const { email, message } = req.body;
     if (!email || !message) {
       return res.status(400).json({ error: "Missing email or message" });

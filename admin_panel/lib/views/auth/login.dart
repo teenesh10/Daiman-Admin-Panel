@@ -21,7 +21,7 @@ class LoginView extends StatelessWidget {
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/daiman_background.jpg'),
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
               ),
             ),
           ),

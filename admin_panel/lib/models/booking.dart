@@ -1,56 +1,57 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Booking {
-  final String bookingID; // Document ID
-  final String userID; // Reference to the user
-  final String facilityID; // Reference to the facility
-  final String courtID; // Reference to the court
-  final String paymentID; // Reference to the payment
-  final DateTime bookingDate; // Booking date
-  final String timeslot; // Selected timeslot
-  final int duration; // Duration in hours
-  final double amount; // Total amount paid
+  String bookingID;
+  String userID;
+  String facilityID;
+  String courtID;
+  DateTime date;
+  DateTime startTime;
+  int duration;
+  DateTime bookingMade;
+  String paymentMethod;
+  double amountPaid;
 
   Booking({
     required this.bookingID,
     required this.userID,
     required this.facilityID,
     required this.courtID,
-    required this.paymentID,
-    required this.bookingDate,
-    required this.timeslot,
+    required this.date,
+    required this.startTime,
     required this.duration,
-    required this.amount,
+    required this.bookingMade,
+    required this.paymentMethod,
+    required this.amountPaid,
   });
 
-  // Convert Firestore document to Booking object
-  factory Booking.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-
-    return Booking(
-      bookingID: doc.id,
-      userID: data['userID'] ?? '',
-      facilityID: data['facilityID'] ?? '',
-      courtID: data['courtID'] ?? '',
-      paymentID: data['paymentID'] ?? '',
-      bookingDate: (data['bookingDate'] as Timestamp).toDate(),
-      timeslot: data['timeslot'] ?? '',
-      duration: data['duration'] ?? 0,
-      amount: data['amount']?.toDouble() ?? 0.0,
-    );
-  }
-
-  // Convert Booking object to a map for Firestore
-  Map<String, dynamic> toFirestore() {
+  Map<String, dynamic> toMap() {
     return {
+      'bookingID': bookingID,
       'userID': userID,
       'facilityID': facilityID,
       'courtID': courtID,
-      'paymentID': paymentID,
-      'bookingDate': Timestamp.fromDate(bookingDate),
-      'timeslot': timeslot,
+      'date': date,
+      'startTime': startTime,
       'duration': duration,
-      'amount': amount,
+      'bookingMade': bookingMade,
+      'paymentMethod': paymentMethod,
+      'amountPaid': amountPaid,
     };
+  }
+
+  factory Booking.fromFirestore(Map<String, dynamic> map, String documentId) {
+    return Booking(
+      bookingID: documentId, // use Firestore doc ID for consistency
+      userID: map['userID'] ?? '',
+      facilityID: map['facilityID'] ?? '',
+      courtID: map['courtID'] ?? '',
+      date: (map['date'] as Timestamp).toDate(),
+      startTime: (map['startTime'] as Timestamp).toDate(),
+      duration: map['duration'] ?? 0,
+      bookingMade: (map['bookingMade'] as Timestamp).toDate(),
+      paymentMethod: map['paymentMethod'] ?? '',
+      amountPaid: (map['amountPaid'] as num).toDouble(),
+    );
   }
 }
