@@ -18,18 +18,24 @@ class ProfileCard extends StatelessWidget {
         content: const Text('Are you sure you want to logout?'),
         actions: [
           TextButton(
-            child: const Text('Cancel'),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).primaryColor,
+            ),
             onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
           ),
           TextButton(
-            child: const Text('Logout'),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).primaryColor,
+            ),
             onPressed: () {
-              Navigator.of(context).pop(); 
+              Navigator.of(context).pop();
               authController.signOut().then((_) {
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/', (route) => false);
               });
             },
+            child: const Text('Logout'),
           ),
         ],
       ),
@@ -51,21 +57,19 @@ class ProfileCard extends StatelessWidget {
         border: Border.all(color: Colors.white10),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize
-            .min, 
+        mainAxisSize: MainAxisSize.min,
         children: [
           CircleAvatar(
             backgroundColor: Colors.grey[200],
             radius: 19,
             child: Icon(
               Icons.person,
-              color: Theme.of(context).primaryColor, 
+              color: Theme.of(context).primaryColor,
             ),
           ),
           const SizedBox(width: defaultPadding / 2),
           ConstrainedBox(
-            constraints: const BoxConstraints(
-                maxWidth: 150), 
+            constraints: const BoxConstraints(maxWidth: 150),
             child: Text(
               adminEmail,
               maxLines: 1,
@@ -84,10 +88,22 @@ class ProfileCard extends StatelessWidget {
             itemBuilder: (context) => [
               const PopupMenuItem<String>(
                 value: 'logout',
-                child: Text('Logout'),
+                child: Row(
+                  children: [
+                    Icon(Icons.logout, color: Colors.redAccent),
+                    SizedBox(width: 10),
+                    Text(
+                      'Logout',
+                      style: TextStyle(
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
-          ),
+          )
         ],
       ),
     );

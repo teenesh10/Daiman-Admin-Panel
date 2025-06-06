@@ -16,7 +16,7 @@ class ManageQueryView extends StatefulWidget {
 
 class _ManageQueryViewState extends State<ManageQueryView> {
   final ManageQueryController _controller = ManageQueryController();
-  String _statusFilter = 'all'; // 'all', 'pending', 'resolved'
+  String _statusFilter = 'all';
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +70,10 @@ class _ManageQueryViewState extends State<ManageQueryView> {
                 onPressed: () {
                   setState(() {});
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  foregroundColor: Colors.white,
+                ),
                 child: const Text('Refresh'),
               ),
             ],
@@ -224,6 +228,9 @@ class _ManageQueryViewState extends State<ManageQueryView> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).primaryColor,
+            ),
             child: const Text('Close'),
           ),
           ElevatedButton(
@@ -232,6 +239,10 @@ class _ManageQueryViewState extends State<ManageQueryView> {
               _showRespondDialog(
                   userEmail, query['report'] ?? '', query['queryID']);
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+            ),
             child: const Text('Respond'),
           ),
         ],
@@ -249,6 +260,9 @@ class _ManageQueryViewState extends State<ManageQueryView> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).primaryColor, 
+            ),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
@@ -267,6 +281,7 @@ class _ManageQueryViewState extends State<ManageQueryView> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
             ),
             child: const Text('Delete'),
           ),

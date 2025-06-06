@@ -46,6 +46,8 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
       _capacity = widget.facility.capacity;
       _description = widget.facility.description;
       _courts = courts;
+      _courts.sort((a, b) =>
+          a.courtName.toLowerCase().compareTo(b.courtName.toLowerCase()));
       _updateRemainingCourtsMessage();
       _checkCapacityValidity();
       _isLoading = false;
@@ -63,6 +65,8 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
     if (newCourt != null) {
       setState(() {
         _courts.add(newCourt);
+        _courts.sort((a, b) =>
+            a.courtName.toLowerCase().compareTo(b.courtName.toLowerCase()));
         _updateRemainingCourtsMessage();
         _checkCapacityValidity();
       });
@@ -80,6 +84,8 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
     if (updatedCourt != null) {
       setState(() {
         _courts[index] = updatedCourt;
+        _courts.sort((a, b) =>
+            a.courtName.toLowerCase().compareTo(b.courtName.toLowerCase()));
         _updateRemainingCourtsMessage();
         _checkCapacityValidity();
       });
@@ -95,6 +101,8 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
   void _deleteCourt(int index) {
     setState(() {
       _courts.removeAt(index);
+      _courts.sort((a, b) =>
+          a.courtName.toLowerCase().compareTo(b.courtName.toLowerCase()));
       _updateRemainingCourtsMessage();
       _checkCapacityValidity();
     });
@@ -180,6 +188,9 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
                   Navigator.pushReplacementNamed(context, '/facilities');
                 }
               },
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).primaryColor,
+              ),
               child: const Text('OK'),
             ),
           ],

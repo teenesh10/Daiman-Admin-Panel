@@ -69,14 +69,12 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    final bool isMobile = size.width < 800;
 
     return Scaffold(
       body: Row(
         children: [
-          const Expanded(
-            flex: 1,
-            child: SideMenu(),
-          ),
+          const Expanded(flex: 1, child: SideMenu()),
           Expanded(
             flex: 5,
             child: Column(
@@ -88,10 +86,8 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Manage Facility Rates",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
+                      Text("Manage Facility Rates",
+                          style: Theme.of(context).textTheme.titleLarge),
                       selectedFacilityID != null
                           ? StreamBuilder<List<Fee>>(
                               stream: _controller.getFee(selectedFacilityID!),
@@ -102,16 +98,13 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                     onPressed: () {
                                       _showAddFacilityRateDialog(
                                           context, selectedFacilityID!);
-                                      _controller
-                                          .addFee(selectedFacilityID! as Fee);
                                     },
                                     icon: const Icon(Icons.add),
                                     label: const Text('Add Fee'),
                                     style: TextButton.styleFrom(
                                       padding: EdgeInsets.symmetric(
                                         horizontal: 20.0,
-                                        vertical:
-                                            size.width < 600 ? 10.0 : 15.0,
+                                        vertical: isMobile ? 10.0 : 15.0,
                                       ),
                                       backgroundColor:
                                           Theme.of(context).primaryColor,
@@ -130,224 +123,189 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: FacilitySelectionWidget(
-                    onFacilitySelected: _onFacilitySelected,
-                  ),
+                      onFacilitySelected: _onFacilitySelected),
                 ),
                 const SizedBox(height: 20.0),
                 Expanded(
                   child: selectedFacilityID == null
                       ? const Center(child: Text('Please select a facility.'))
-                      : StreamBuilder<List<Fee>>(
-                          stream: _controller.getFee(selectedFacilityID!),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                            if (snapshot.hasError) {
-                              return const Center(
-                                  child: Text('Error loading rates'));
-                            }
-                            if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                              return const Center(
-                                  child: Text('No facility rates found'));
-                            }
+                      : LayoutBuilder(
+                          builder: (context, constraints) {
+                            return StreamBuilder<List<Fee>>(
+                              stream: _controller.getFee(selectedFacilityID!),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                }
+                                if (snapshot.hasError) {
+                                  return const Center(
+                                      child: Text('Error loading rates'));
+                                }
+                                if (!snapshot.hasData ||
+                                    snapshot.data!.isEmpty) {
+                                  return const Center(
+                                      child: Text('No facility rates found'));
+                                }
 
-                            final rates = snapshot.data!
-                                .where((rate) => rate.feeID
-                                    .toLowerCase()
-                                    .contains(searchQuery.toLowerCase()))
-                                .toList();
+                                final rates = snapshot.data!
+                                    .where((rate) => rate.feeID
+                                        .toLowerCase()
+                                        .contains(searchQuery.toLowerCase()))
+                                    .toList();
 
-                            return SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: DataTable(
-                                columnSpacing: 50.0,
-                                headingRowHeight: 80.0,
-                                headingRowColor:
-                                    MaterialStateProperty.resolveWith(
-                                  (states) => Colors.grey.shade200,
-                                ),
-                                columns: const [
-                                  DataColumn(
-                                    label: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "#",
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "Weekday Rate (Before 6 PM)",
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "Weekday Rate (After 6 PM)",
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "Weekend Rate (Before 6 PM)",
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "Weekend Rate (After 6 PM)",
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "Description",
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "Actions",
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                                rows: List.generate(rates.length, (index) {
-                                  final fee = rates[index];
-                                  return DataRow(
-                                    cells: [
-                                      DataCell(
-                                        Text(
-                                          (index + 1).toString(),
-                                          style:
-                                              const TextStyle(fontSize: 16.0),
+                                return SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                        minWidth: constraints.maxWidth),
+                                    child: DataTable(
+                                      columnSpacing: 30.0,
+                                      headingRowHeight: 70.0,
+                                      headingRowColor:
+                                          MaterialStateProperty.resolveWith(
+                                              (states) => Colors.grey.shade200),
+                                      columns: const [
+                                        DataColumn(
+                                          label: Text("#",
+                                              style: TextStyle(
+                                                  fontSize: 14.0,
+                                                  fontWeight: FontWeight.bold)),
                                         ),
-                                      ),
-                                      DataCell(
-                                        Text(
-                                          'RM ${fee.weekdayRateBefore6.toStringAsFixed(2)}',
-                                          style:
-                                              const TextStyle(fontSize: 16.0),
+                                        DataColumn(
+                                          label: Text("Weekday\nBefore 6 PM",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 14.0,
+                                                  fontWeight: FontWeight.bold)),
                                         ),
-                                      ),
-                                      DataCell(
-                                        Text(
-                                          'RM ${fee.weekdayRateAfter6.toStringAsFixed(2)}',
-                                          style:
-                                              const TextStyle(fontSize: 16.0),
+                                        DataColumn(
+                                          label: Text("Weekday\nAfter 6 PM",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 14.0,
+                                                  fontWeight: FontWeight.bold)),
                                         ),
-                                      ),
-                                      DataCell(
-                                        Text(
-                                          'RM ${fee.weekendRateBefore6.toStringAsFixed(2)}',
-                                          style:
-                                              const TextStyle(fontSize: 16.0),
+                                        DataColumn(
+                                          label: Text("Weekend\nBefore 6 PM",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 14.0,
+                                                  fontWeight: FontWeight.bold)),
                                         ),
-                                      ),
-                                      DataCell(
-                                        Text(
-                                          'RM ${fee.weekendRateAfter6.toStringAsFixed(2)}',
-                                          style:
-                                              const TextStyle(fontSize: 16.0),
+                                        DataColumn(
+                                          label: Text("Weekend\nAfter 6 PM",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 14.0,
+                                                  fontWeight: FontWeight.bold)),
                                         ),
-                                      ),
-                                      DataCell(
-                                        Text(
-                                          fee.description,
-                                          style:
-                                              const TextStyle(fontSize: 16.0),
+                                        DataColumn(
+                                          label: Text("Description",
+                                              style: TextStyle(
+                                                  fontSize: 14.0,
+                                                  fontWeight: FontWeight.bold)),
                                         ),
-                                      ),
-                                      DataCell(
-                                        Row(
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(Icons.edit),
-                                              onPressed: () async {
-                                                final updatedFee =
-                                                    await showDialog<Fee>(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return EditFacilityRatePage(
-                                                        fee: fee);
-                                                  },
-                                                );
-
-                                                if (updatedFee != null) {
-                                                  _controller
-                                                      .updateFee(updatedFee);
-                                                }
-                                              },
+                                        DataColumn(
+                                          label: Text("Actions",
+                                              style: TextStyle(
+                                                  fontSize: 14.0,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                      ],
+                                      rows:
+                                          List.generate(rates.length, (index) {
+                                        final fee = rates[index];
+                                        return DataRow(
+                                          cells: [
+                                            DataCell(Text(
+                                                (index + 1).toString(),
+                                                style: const TextStyle(
+                                                    fontSize: 14.0))),
+                                            DataCell(Text(
+                                                'RM ${fee.weekdayRateBefore6.toStringAsFixed(2)}',
+                                                style: const TextStyle(
+                                                    fontSize: 14.0))),
+                                            DataCell(Text(
+                                                'RM ${fee.weekdayRateAfter6.toStringAsFixed(2)}',
+                                                style: const TextStyle(
+                                                    fontSize: 14.0))),
+                                            DataCell(Text(
+                                                'RM ${fee.weekendRateBefore6.toStringAsFixed(2)}',
+                                                style: const TextStyle(
+                                                    fontSize: 14.0))),
+                                            DataCell(Text(
+                                                'RM ${fee.weekendRateAfter6.toStringAsFixed(2)}',
+                                                style: const TextStyle(
+                                                    fontSize: 14.0))),
+                                            DataCell(
+                                              ConstrainedBox(
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        maxWidth: 150),
+                                                child: Text(
+                                                  fee.description,
+                                                  style: const TextStyle(
+                                                      fontSize: 14.0),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 3,
+                                                ),
+                                              ),
                                             ),
-                                            IconButton(
-                                              icon: const Icon(Icons.delete,
-                                                  color: Colors.red),
-                                              onPressed: () {
-                                                _showDeleteConfirmation(
-                                                    context, fee);
-                                              },
+                                            DataCell(
+                                              Row(
+                                                children: [
+                                                  IconButton(
+                                                    icon:
+                                                        const Icon(Icons.edit),
+                                                    onPressed: () async {
+                                                      final updatedFee =
+                                                          await showDialog<Fee>(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return EditFacilityRatePage(
+                                                              fee: fee);
+                                                        },
+                                                      );
+                                                      if (updatedFee != null) {
+                                                        _controller.updateFee(
+                                                            updatedFee);
+                                                      }
+                                                    },
+                                                  ),
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                        Icons.delete,
+                                                        color: Colors.red),
+                                                    onPressed: () {
+                                                      _showDeleteConfirmation(
+                                                          context, fee);
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
-                                        ),
+                                        );
+                                      }),
+                                      border: TableBorder(
+                                        horizontalInside: BorderSide(
+                                            width: 1,
+                                            color: Colors.grey.shade300),
+                                        bottom: BorderSide(
+                                            width: 1,
+                                            color: Colors.grey.shade300),
+                                        verticalInside: BorderSide(
+                                            width: 1,
+                                            color: Colors.grey.shade300),
                                       ),
-                                    ],
-                                  );
-                                }),
-                                border: TableBorder(
-                                  horizontalInside: BorderSide(
-                                    width: 1,
-                                    color: Colors.grey.shade300,
-                                    style: BorderStyle.solid,
+                                    ),
                                   ),
-                                  bottom: BorderSide(
-                                    width: 1,
-                                    color: Colors.grey.shade300,
-                                    style: BorderStyle.solid,
-                                  ),
-                                  verticalInside: BorderSide(
-                                    width: 1,
-                                    color: Colors.grey.shade300,
-                                    style: BorderStyle.solid,
-                                  ),
-                                ),
-                              ),
+                                );
+                              },
                             );
                           },
                         ),
