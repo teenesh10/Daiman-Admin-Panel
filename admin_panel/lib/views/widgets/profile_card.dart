@@ -24,7 +24,7 @@ class ProfileCard extends StatelessWidget {
           TextButton(
             child: const Text('Logout'),
             onPressed: () {
-              Navigator.of(context).pop(); // Close dialog
+              Navigator.of(context).pop(); 
               authController.signOut().then((_) {
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/', (route) => false);
@@ -46,24 +46,26 @@ class ProfileCard extends StatelessWidget {
         vertical: defaultPadding / 2,
       ),
       decoration: BoxDecoration(
-        color: secondaryColor,
+        color: bgColor,
         borderRadius: const BorderRadius.all(Radius.circular(10)),
         border: Border.all(color: Colors.white10),
       ),
       child: Row(
         mainAxisSize: MainAxisSize
-            .min, // Ensure the ProfileCard doesn't take up unnecessary space
+            .min, 
         children: [
           CircleAvatar(
             backgroundColor: Colors.grey[200],
             radius: 19,
-            child: const Icon(Icons.person),
+            child: Icon(
+              Icons.person,
+              color: Theme.of(context).primaryColor, 
+            ),
           ),
           const SizedBox(width: defaultPadding / 2),
           ConstrainedBox(
-            // Ensure the email doesn't overflow the space
             constraints: const BoxConstraints(
-                maxWidth: 150), // Adjust maxWidth as needed
+                maxWidth: 150), 
             child: Text(
               adminEmail,
               maxLines: 1,

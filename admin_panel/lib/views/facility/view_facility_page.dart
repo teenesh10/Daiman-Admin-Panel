@@ -28,9 +28,7 @@ class _FacilityViewState extends State<FacilityView> {
   void _loadFacilities() async {
     final facilitiesStream = _controller.getFacilities();
     facilitiesStream.listen((facilities) {
-      setState(() {
-        // Facilities state updated here.
-      });
+      setState(() {});
     });
   }
 
@@ -43,7 +41,6 @@ class _FacilityViewState extends State<FacilityView> {
     );
   }
 
-  // Function to show the confirmation dialog for deleting a facility
   void _showDeleteConfirmationDialog(BuildContext context, Facility facility) {
     showDialog(
       context: context,
@@ -64,8 +61,7 @@ class _FacilityViewState extends State<FacilityView> {
               child: const Text("Delete", style: TextStyle(color: Colors.red)),
               onPressed: () async {
                 await _controller.deleteFacility(facility.facilityID);
-                Navigator.of(context).pop(); // Close the dialog
-                // Optionally, you can add a notification/snackbar here to indicate successful deletion.
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -81,7 +77,6 @@ class _FacilityViewState extends State<FacilityView> {
     return Scaffold(
       body: Row(
         children: [
-          // Side Menu similar to DashboardView
           const Expanded(
             flex: 1,
             child: SideMenu(),
@@ -90,7 +85,6 @@ class _FacilityViewState extends State<FacilityView> {
             flex: 5,
             child: Column(
               children: [
-                // Header similar to DashboardView
                 const Header(),
                 const SizedBox(height: 20.0),
                 Padding(
@@ -108,13 +102,13 @@ class _FacilityViewState extends State<FacilityView> {
                         },
                         icon: const Icon(Icons.add),
                         label: const Text("Add New Facility"),
-                        style: TextButton.styleFrom(
+                        style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(
                             horizontal: 20.0,
                             vertical: size.width < 600 ? 10.0 : 15.0,
                           ),
-                          backgroundColor:
-                              const Color.fromARGB(255, 55, 255, 0),
+                          backgroundColor: Theme.of(context).primaryColor,
+                          foregroundColor: Colors.white,
                         ),
                       ),
                     ],
@@ -150,9 +144,8 @@ class _FacilityViewState extends State<FacilityView> {
                         return SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: DataTable(
-                            columnSpacing: 50.0, // Adjust column spacing
-                            headingRowHeight:
-                                80.0, // Increase heading row height
+                            columnSpacing: 50.0,
+                            headingRowHeight: 80.0,
                             headingRowColor: MaterialStateProperty.resolveWith(
                                 (states) => Colors.grey.shade200),
                             columns: const [
@@ -242,6 +235,7 @@ class _FacilityViewState extends State<FacilityView> {
                                       children: [
                                         IconButton(
                                           icon: const Icon(Icons.visibility),
+                                          color: Theme.of(context).primaryColor,
                                           onPressed: () {
                                             showDialog(
                                               context: context,
@@ -250,8 +244,7 @@ class _FacilityViewState extends State<FacilityView> {
                                                   facilityId:
                                                       facility.facilityID,
                                                   onClose: () {
-                                                    Navigator.of(context)
-                                                        .pop(); 
+                                                    Navigator.of(context).pop();
                                                   },
                                                 );
                                               },

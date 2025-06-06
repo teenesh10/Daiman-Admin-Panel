@@ -26,7 +26,6 @@ class _EditFacilityRatePageState extends State<EditFacilityRatePage> {
   @override
   void initState() {
     super.initState();
-    // Initialize form fields with the existing fee data
     _weekdayRateBefore6 = widget.fee.weekdayRateBefore6;
     _weekdayRateAfter6 = widget.fee.weekdayRateAfter6;
     _weekendRateBefore6 = widget.fee.weekendRateBefore6;
@@ -48,7 +47,6 @@ class _EditFacilityRatePageState extends State<EditFacilityRatePage> {
         description: _description,
       );
 
-      // Submit updated fee to Firestore
       _controller.updateFee(updatedFee).then((_) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Facility rate updated successfully.')),
@@ -193,6 +191,7 @@ class _EditFacilityRatePageState extends State<EditFacilityRatePage> {
                           vertical: size.width < 600 ? 10.0 : 15.0,
                         ),
                         backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
                       ),
                       child: const Text('Cancel'),
                     ),
@@ -203,7 +202,8 @@ class _EditFacilityRatePageState extends State<EditFacilityRatePage> {
                           horizontal: 20.0,
                           vertical: size.width < 600 ? 10.0 : 15.0,
                         ),
-                        backgroundColor: Colors.green,
+                        backgroundColor: Theme.of(context).primaryColor,
+                        foregroundColor: Colors.white,
                       ),
                       child: const Text('Update'),
                     ),

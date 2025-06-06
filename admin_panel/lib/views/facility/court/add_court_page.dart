@@ -105,23 +105,23 @@ class _AddCourtPageState extends State<AddCourtPage> {
                         Navigator.pop(context);
                       },
                       style: TextButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20.0,
-                          vertical: size.width < 600 ? 10.0 : 15.0,
-                        ),
-                        backgroundColor: Colors.red,
-                      ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20.0,
+                            vertical: size.width < 600 ? 10.0 : 15.0,
+                          ),
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white),
                       child: const Text('Cancel'),
                     ),
                     ElevatedButton(
                       onPressed: _submitForm,
                       style: TextButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20.0,
-                          vertical: size.width < 600 ? 10.0 : 15.0,
-                        ),
-                        backgroundColor: Colors.green,
-                      ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20.0,
+                            vertical: size.width < 600 ? 10.0 : 15.0,
+                          ),
+                          backgroundColor: Theme.of(context).primaryColor,
+                          foregroundColor: Colors.white),
                       child: const Text('Submit'),
                     ),
                   ],

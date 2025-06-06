@@ -1,3 +1,4 @@
+import 'package:admin_panel/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../controllers/manage_query_controller.dart';
@@ -30,7 +31,7 @@ class _PendingQueriesState extends State<PendingQueries> {
               },
               child: const Text(
                 "View All",
-                style: TextStyle(color: Colors.blue, fontSize: 14),
+                style: TextStyle(color: primaryColor, fontSize: 14),
               ),
             )
           ],

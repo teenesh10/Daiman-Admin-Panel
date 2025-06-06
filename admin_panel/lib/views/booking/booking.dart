@@ -1,6 +1,5 @@
 import 'package:admin_panel/models/bookingDataSource.dart';
 import 'package:admin_panel/models/facility.dart';
-import 'package:admin_panel/views/widgets/booking_detail.dart';
 import 'package:admin_panel/views/widgets/court_availability.dart';
 import 'package:admin_panel/views/widgets/header.dart';
 import 'package:admin_panel/views/widgets/side_menu.dart';
@@ -87,46 +86,22 @@ class _ManageBookingViewState extends State<ManageBookingView> {
 
                       return SfCalendar(
                         view: CalendarView.month,
-                        allowedViews: const [CalendarView.month],
+                        allowedViews: null, 
                         showNavigationArrow: true,
                         showDatePickerButton: true,
                         dataSource: BookingDataSource(filtered),
                         monthViewSettings: const MonthViewSettings(
                           appointmentDisplayMode:
-                              MonthAppointmentDisplayMode.appointment,
+                              MonthAppointmentDisplayMode.none,
                         ),
-                        appointmentBuilder: (context, details) {
-                          return Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Colors.blueAccent,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              "${details.appointments.length} Booking(s)",
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 10),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          );
-                        },
+                        todayHighlightColor: Theme.of(context).primaryColor,
+                        selectionDecoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor.withOpacity(0.3),
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                         onTap: (details) async {
-                          if (details.targetElement ==
-                                  CalendarElement.appointment &&
-                              details.appointments != null &&
-                              details.appointments!.isNotEmpty) {
-                            final Booking booking = details.appointments!.first;
-
-                            final controller = ManageBookingController();
-                            final userInfo = await controller
-                                .getBookingUserDetails(booking.userID);
-
-                            if (context.mounted) {
-                              showBookingDetailsDialog(
-                                  context, booking, userInfo);
-                            }
-                          } else if ((details.targetElement ==
+                          if ((details.targetElement ==
                                       CalendarElement.calendarCell ||
                                   details.targetElement ==
                                       CalendarElement.agenda) &&
@@ -135,9 +110,11 @@ class _ManageBookingViewState extends State<ManageBookingView> {
 
                             if (selectedFacilityId == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          "Please select a facility first.")));
+                                const SnackBar(
+                                  content:
+                                      Text("Please select a facility first."),
+                                ),
+                              );
                               return;
                             }
 
@@ -156,7 +133,8 @@ class _ManageBookingViewState extends State<ManageBookingView> {
                                 context: context,
                                 builder: (_) => AlertDialog(
                                   title: Text(
-                                      "Availability on ${DateFormat('yyyy-MM-dd').format(selectedDate)}"),
+                                    "Availability on ${DateFormat('yyyy-MM-dd').format(selectedDate)}",
+                                  ),
                                   content: CourtAvailabilityMatrix(
                                     courts: courts,
                                     bookings: bookingsOnDate,
@@ -166,6 +144,10 @@ class _ManageBookingViewState extends State<ManageBookingView> {
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.of(context).pop(),
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: Theme.of(context)
+                                            .primaryColor, 
+                                      ),
                                       child: const Text("Close"),
                                     ),
                                   ],

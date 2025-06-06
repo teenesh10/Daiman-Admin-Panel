@@ -9,14 +9,13 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authController = Provider.of<AuthController>(context);
-    // Determine screen size
+
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
 
     return Scaffold(
       body: Stack(
         children: [
-          // Background Image
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -25,11 +24,9 @@ class LoginView extends StatelessWidget {
               ),
             ),
           ),
-          // Semi-transparent overlay
           Container(
             color: Colors.black.withOpacity(0.3),
           ),
-          // Login form
           Center(
             child: Container(
               width: isMobile ? screenWidth * 0.9 : 400,
@@ -53,7 +50,7 @@ class LoginView extends StatelessWidget {
                     height: 100,
                   ),
                   const SizedBox(height: 16.0),
-                  // Error Message
+
                   if (authController.errorMessage != null) ...[
                     Text(
                       authController.errorMessage!,
@@ -61,7 +58,6 @@ class LoginView extends StatelessWidget {
                     ),
                     const SizedBox(height: 16.0),
                   ],
-                  // Email Input
                   TextFormField(
                     controller: authController.emailController,
                     decoration: const InputDecoration(
@@ -69,10 +65,9 @@ class LoginView extends StatelessWidget {
                       hintText: 'Email',
                       border: OutlineInputBorder(),
                     ),
-                     style: const TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                   const SizedBox(height: 16.0),
-                  // Password Input
                   TextFormField(
                     controller: authController.passwordController,
                     obscureText: true,
@@ -81,10 +76,9 @@ class LoginView extends StatelessWidget {
                       hintText: 'Password',
                       border: OutlineInputBorder(),
                     ),
-                     style: const TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                   const SizedBox(height: 16.0),
-                  // Login Button
                   ElevatedButton(
                     onPressed: authController.isLoading
                         ? null
@@ -99,24 +93,21 @@ class LoginView extends StatelessWidget {
                           },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
+                      backgroundColor: Theme.of(context).primaryColor,
+                      foregroundColor: Colors.white,
                     ),
                     child: authController.isLoading
                         ? const CircularProgressIndicator(
                             valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.black),
+                                AlwaysStoppedAnimation<Color>(Colors.white),
                           )
-                        : const Text(
-                            'Login',
-                            style: TextStyle(color: Colors.black),
-                          ),
+                        : const Text('Login'),
                   ),
                   const SizedBox(height: 16.0),
-                  // Forgot Password Link
                   TextButton(
                     onPressed: authController.isLoading
                         ? null
                         : () {
-                            // Navigate to the Forgot Password page
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -124,10 +115,11 @@ class LoginView extends StatelessWidget {
                                       const ForgotPasswordView()),
                             );
                           },
-                    child: const Text(
-                      'Forgot Password?',
-                      style: TextStyle(color: Colors.black),
+                    style: TextButton.styleFrom(
+                      foregroundColor:
+                          Theme.of(context).primaryColor, 
                     ),
+                    child: const Text('Forgot Password?'),
                   ),
                 ],
               ),

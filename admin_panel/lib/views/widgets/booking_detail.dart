@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:admin_panel/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:admin_panel/models/booking.dart';
@@ -18,7 +19,7 @@ void showBookingDetailsDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       title: const Row(
         children: [
-          Icon(Icons.info_outline, color: Colors.blue),
+          Icon(Icons.info_outline, color: primaryColor),
           SizedBox(width: 8),
           Text("Booking Details"),
         ],
@@ -51,7 +52,7 @@ void showBookingDetailsDialog(
         TextButton(
           style: TextButton.styleFrom(
             foregroundColor: Colors.white,
-            backgroundColor: Colors.blueAccent,
+            backgroundColor: Theme.of(context).primaryColor,
           ),
           onPressed: () => Navigator.pop(context),
           child: const Text("Close"),

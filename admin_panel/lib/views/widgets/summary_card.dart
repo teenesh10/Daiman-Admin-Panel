@@ -1,3 +1,4 @@
+import 'package:admin_panel/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_panel/controllers/auth_controller.dart';
 import 'package:admin_panel/controllers/manage_facility_controller.dart';
@@ -41,7 +42,7 @@ class _SummaryCardsState extends State<SummaryCards> {
           builder: (context, snapshot) {
             final count = snapshot.hasData ? snapshot.data!.length : -1;
             return _buildSummaryCard(
-              color: Colors.blue,
+              color: primaryColor,
               icon: Icons.sports_soccer,
               label: "Total Facilities",
               count: count,

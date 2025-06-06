@@ -34,7 +34,7 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
       BuildContext context, String selectedFacilityID) {
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevent closing by tapping outside
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AddFacilityRatePage(selectedFacilityID: selectedFacilityID);
       },
@@ -50,14 +50,13 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
           content: const Text('Are you sure you want to delete this fee?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Close the dialog
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                _controller.deleteFee(fee.facilityID,
-                    fee.feeID); // Pass both facilityID and feeID
-                Navigator.of(context).pop(); // Close the dialog after deletion
+                _controller.deleteFee(fee.facilityID, fee.feeID);
+                Navigator.of(context).pop();
               },
               child: const Text('Delete'),
             ),
@@ -99,7 +98,6 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData ||
                                     snapshot.data!.isEmpty) {
-                                  // Show Add button only when no rates exist
                                   return ElevatedButton.icon(
                                     onPressed: () {
                                       _showAddFacilityRateDialog(
@@ -116,12 +114,12 @@ class _ViewFacilityRatesState extends State<ViewFacilityRates> {
                                             size.width < 600 ? 10.0 : 15.0,
                                       ),
                                       backgroundColor:
-                                          const Color.fromARGB(255, 55, 255, 0),
+                                          Theme.of(context).primaryColor,
+                                      foregroundColor: Colors.white,
                                     ),
                                   );
                                 }
-                                return const SizedBox
-                                    .shrink(); // Hide button when data exists
+                                return const SizedBox.shrink();
                               },
                             )
                           : const SizedBox.shrink(),

@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, unrelated_type_equality_checks
 
+import 'package:admin_panel/constants.dart';
 import 'package:admin_panel/controllers/manage_facility_controller.dart';
 import 'package:admin_panel/models/court.dart';
 import 'package:admin_panel/models/facility.dart';
@@ -24,7 +25,7 @@ class FacilityInfoPage extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: bgColor,
       contentPadding: const EdgeInsets.all(20.0),
       content: SizedBox(
         width: size.width * 0.8,
@@ -98,7 +99,9 @@ class FacilityInfoPage extends StatelessWidget {
                                   child: Text('No courts found'));
                             }
 
-                            final courts = snapshot.data!;
+                            final courts = snapshot.data!
+                              ..sort(
+                                  (a, b) => a.courtName.compareTo(b.courtName));
 
                             return ListView.builder(
                               itemCount: courts.length,

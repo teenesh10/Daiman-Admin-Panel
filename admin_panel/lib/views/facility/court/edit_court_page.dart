@@ -93,10 +93,17 @@ class _EditCourtPageState extends State<EditCourtPage> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
+          style: TextButton.styleFrom(
+            foregroundColor: Theme.of(context).primaryColor, 
+          ),
           child: const Text('Cancel'),
         ),
         ElevatedButton(
           onPressed: _submitForm,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.white, 
+          ),
           child: const Text('Save'),
         ),
       ],

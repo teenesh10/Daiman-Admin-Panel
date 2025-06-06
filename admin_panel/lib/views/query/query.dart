@@ -167,7 +167,7 @@ class _ManageQueryViewState extends State<ManageQueryView> {
                         children: [
                           IconButton(
                             icon: const Icon(Icons.visibility),
-                            color: Colors.blue,
+                            color: Theme.of(context).primaryColor,
                             onPressed: () {
                               _showQueryDetails(context, query);
                             },

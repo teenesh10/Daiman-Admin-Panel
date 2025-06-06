@@ -11,7 +11,7 @@ class SideMenu extends StatelessWidget {
     final currentPage = authController.currentPage;
 
     return Drawer(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).primaryColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.zero,
       ),
@@ -26,7 +26,6 @@ class SideMenu extends StatelessWidget {
               ),
             ),
 
-            // Full-width divider below logo
             const Divider(
               color: Colors.white24,
               thickness: 1,
@@ -83,6 +82,12 @@ class SideMenu extends StatelessWidget {
             ),
 
             const Spacer(),
+
+            const Divider(
+              color: Colors.white24,
+              thickness: 1,
+              height: 1,
+            ),
 
             const Padding(
               padding: EdgeInsets.only(bottom: 16.0),

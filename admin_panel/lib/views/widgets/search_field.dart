@@ -11,7 +11,7 @@ class SearchField extends StatelessWidget {
     return TextField(
       decoration: InputDecoration(
         hintText: "Search",
-        fillColor: secondaryColor,
+        fillColor: bgColor,
         filled: true,
         // Define the border properties here
         border: const OutlineInputBorder(

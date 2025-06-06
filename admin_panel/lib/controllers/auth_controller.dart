@@ -44,8 +44,6 @@ class AuthController with ChangeNotifier {
         password: password,
       );
 
-      final freshToken = await userCredential.user?.getIdToken(true);
-
       // Fetch admin data from Firestore
       DocumentSnapshot adminDoc = await _firestore
           .collection('admin')

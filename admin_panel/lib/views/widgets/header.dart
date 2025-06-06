@@ -19,7 +19,7 @@ class Header extends StatelessWidget {
         Container(
           height: 80,
           padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-          color: secondaryColor, // Use bgColor for the header background
+          color: bgColor, // Use bgColor for the header background
           child: Row(
             children: [
               Text(

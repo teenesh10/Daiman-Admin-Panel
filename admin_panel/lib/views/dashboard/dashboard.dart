@@ -1,3 +1,4 @@
+import 'package:admin_panel/constants.dart';
 import 'package:admin_panel/views/widgets/header.dart';
 import 'package:admin_panel/views/widgets/query_card.dart';
 import 'package:admin_panel/views/widgets/side_menu.dart';
@@ -10,7 +11,7 @@ class DashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Color(0xFFF4F6F8),
+      backgroundColor: bgColor,
       body: Row(
         children: [
           Expanded(
