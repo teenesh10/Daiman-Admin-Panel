@@ -6,42 +6,47 @@ import 'package:firebase_auth/firebase_auth.dart';
 class ManageQueryController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Returns a real-time stream of all queries with their queryID included.
   Stream<List<Map<String, dynamic>>> getQueries() {
     return _firestore.collection('query').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
-        return doc.data()..['queryID'] = doc.id;
+        final data = doc.data();
+        data['queryID'] = doc.id;
+        return data;
       }).toList();
     });
   }
 
+  // Deletes a query by its document ID.
   Future<void> deleteQuery(String queryID) async {
     await _firestore.collection('query').doc(queryID).delete();
   }
 
+  // Marks a query as resolved in Firestore.
   Future<void> resolveQuery(String queryID) async {
     await _firestore.collection('query').doc(queryID).update({
       'status': 'resolved',
     });
   }
 
+  // Retrieves the email address of a user given their user ID.
+  // Returns 'Unknown' if the user or email field doesn't exist.
   Future<String> getUserEmail(String userID) async {
     try {
-      DocumentSnapshot userDoc =
-          await _firestore.collection('user').doc(userID).get();
-      return userDoc['email'] ?? 'Unknown';
-    } catch (e) {
-      print('Error fetching user email: $e');
+      final userDoc = await _firestore.collection('user').doc(userID).get();
+      return userDoc.data()?['email'] ?? 'Unknown';
+    } catch (_) {
       return 'Unknown';
     }
   }
 
+  // Sends an email response to the user via a backend HTTP endpoint.
+  // Resolves the query if the email was sent successfully.
   Future<void> sendEmailToUser(
       String email, String message, String queryID) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        throw Exception("No authenticated user");
-      }
+      if (user == null) throw Exception("No authenticated user");
 
       final idToken = await user.getIdToken(true);
 
@@ -58,15 +63,11 @@ class ManageQueryController {
       );
 
       if (response.statusCode == 200) {
-        print('Email sent successfully!');
         await resolveQuery(queryID);
       } else {
-        print('Failed to send email. Status: ${response.statusCode}');
-        print('Response body: ${response.body}');
         throw Exception('Failed to send email: ${response.body}');
       }
     } catch (e) {
-      print('Error in sendEmailToUser: $e');
       rethrow;
     }
   }

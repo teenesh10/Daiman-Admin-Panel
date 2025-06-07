@@ -98,14 +98,47 @@ class _EditFacilityPageState extends State<EditFacilityPage> {
     }
   }
 
-  void _deleteCourt(int index) {
-    setState(() {
-      _courts.removeAt(index);
-      _courts.sort((a, b) =>
-          a.courtName.toLowerCase().compareTo(b.courtName.toLowerCase()));
-      _updateRemainingCourtsMessage();
-      _checkCapacityValidity();
-    });
+  // void _deleteCourt(int index) {
+  //   setState(() {
+  //     _courts.removeAt(index);
+  //     _courts.sort((a, b) =>
+  //         a.courtName.toLowerCase().compareTo(b.courtName.toLowerCase()));
+  //     _updateRemainingCourtsMessage();
+  //     _checkCapacityValidity();
+  //   });
+  // }
+
+  void _deleteCourt(int index) async {
+    final confirmDelete = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Delete'),
+          content: Text(
+              'Are you sure you want to delete court "${_courts[index].courtName}"?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmDelete == true) {
+      setState(() {
+        _courts.removeAt(index);
+        _courts.sort((a, b) =>
+            a.courtName.toLowerCase().compareTo(b.courtName.toLowerCase()));
+        _updateRemainingCourtsMessage();
+        _checkCapacityValidity();
+      });
+    }
   }
 
   void _updateRemainingCourtsMessage() {

@@ -233,18 +233,30 @@ class _ManageQueryViewState extends State<ManageQueryView> {
             ),
             child: const Text('Close'),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _showRespondDialog(
-                  userEmail, query['report'] ?? '', query['queryID']);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
-              foregroundColor: Colors.white,
+          if ((query['status'] ?? 'pending') == 'pending')
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _showRespondDialog(
+                    userEmail, query['report'] ?? '', query['queryID']);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Respond'),
+            )
+          else
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Text(
+                'Already responded via email.',
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Colors.grey,
+                ),
+              ),
             ),
-            child: const Text('Respond'),
-          ),
         ],
       ),
     );
@@ -261,7 +273,7 @@ class _ManageQueryViewState extends State<ManageQueryView> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).primaryColor, 
+              foregroundColor: Theme.of(context).primaryColor,
             ),
             child: const Text('Cancel'),
           ),
@@ -270,12 +282,16 @@ class _ManageQueryViewState extends State<ManageQueryView> {
               try {
                 await _controller.deleteQuery(queryID);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Query deleted successfully')),
+                  const SnackBar(
+                      content: Text('Query deleted successfully'),
+                      backgroundColor: Colors.green),
                 );
                 Navigator.pop(context);
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error deleting query: $e')),
+                  SnackBar(
+                      content: Text('Error deleting query: $e'),
+                      backgroundColor: Colors.red),
                 );
               }
             },
@@ -331,17 +347,24 @@ class _ManageQueryViewState extends State<ManageQueryView> {
                       email, responseController.text, queryID);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                        content:
-                            Text('Response sent and query marked as resolved')),
+                      content: Text('Response sent to user email'),
+                      backgroundColor: Colors.green,
+                    ),
                   );
                   Navigator.pop(context);
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error sending response: $e')),
+                    SnackBar(
+                        content: Text('Error sending response: $e'),
+                        backgroundColor: Colors.red),
                   );
                 }
               }
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+            ),
             child: const Text('Submit'),
           ),
         ],

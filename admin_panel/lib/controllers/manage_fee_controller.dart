@@ -9,7 +9,7 @@ class ManageFeeController {
     return _firestore
         .collection('facility')
         .doc(facilityID)
-        .collection('fee') // Subcollection for facility rates
+        .collection('fee')
         .snapshots()
         .map((snapshot) =>
             snapshot.docs.map((doc) => Fee.fromSnapshot(doc)).toList());
@@ -28,7 +28,7 @@ class ManageFeeController {
   Future<void> updateFee(Fee fee) async {
     await FirebaseFirestore.instance
         .collection('facility')
-        .doc(fee.facilityID) // This will now be correctly retrieved
+        .doc(fee.facilityID)
         .collection('fee')
         .doc(fee.feeID)
         .update(fee.toMap());

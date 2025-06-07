@@ -10,7 +10,6 @@ class AuthController with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Add TextEditingController instances for email and password
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -26,59 +25,64 @@ class AuthController with ChangeNotifier {
   String _currentPage = "Dashboard";
   String get currentPage => _currentPage;
 
-  // Method to log in an admin
+  /// Logs in an admin using Firebase Auth and retrieves admin data from Firestore.
   Future<void> login(
       String email, String password, BuildContext context) async {
-    try {
-      if (email.isEmpty || password.isEmpty) {
-        _errorMessage = "Please fill in all fields.";
-        notifyListeners();
-        return;
-      }
-
-      _isLoading = true;
+    if (email.isEmpty || password.isEmpty) {
+      _errorMessage = "Please fill in all fields.";
       notifyListeners();
+      return;
+    }
 
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      // Attempt sign in
+      final UserCredential userCredential =
+          await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      // Fetch admin data from Firestore
-      DocumentSnapshot adminDoc = await _firestore
+      // Fetch admin document from Firestore
+      final adminDoc = await _firestore
           .collection('admin')
           .doc(userCredential.user!.uid)
           .get();
 
       if (!adminDoc.exists) {
-        throw Exception('No admin found for the provided credentials.');
+        _errorMessage = "No admin found for the provided credentials.";
+        notifyListeners();
+        return;
       }
 
-      // Parse the admin data
+      // Parse admin data
       _admin = Admin.fromDocumentSnapshot(
-          adminDoc.data() as Map<String, dynamic>, adminDoc.id);
+        adminDoc.data() as Map<String, dynamic>,
+        adminDoc.id,
+      );
 
-      _errorMessage = null; // Clear any previous error messages
+      _errorMessage = null;
       notifyListeners();
 
-      // Redirect to dashboard page upon successful login
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const DashboardView()),
       );
     } on FirebaseAuthException catch (e) {
-      // Handle Firebase authentication errors
-      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        _errorMessage = "Invalid email or password.";
+      if (e.code == 'user-not-found' ||
+          e.code == 'wrong-password' ||
+          e.code == 'invalid-credential') {
+        _errorMessage = "Invalid email address or password.";
       } else if (e.code == 'invalid-email') {
         _errorMessage = "The email address is not valid.";
       } else {
-        _errorMessage = e.message;
+        _errorMessage = "Login failed. Please try again.";
       }
       notifyListeners();
-    } catch (e) {
-      // Handle other errors (e.g., no admin found)
-      _errorMessage = e.toString();
+    } catch (_) {
+      _errorMessage = "Login failed. Please check your email and password.";
       notifyListeners();
     } finally {
       _isLoading = false;
@@ -86,19 +90,19 @@ class AuthController with ChangeNotifier {
     }
   }
 
-  // Method to reset password
+  /// Sends a password reset email if the admin email exists in Firestore.
   Future<void> resetPassword(String email, BuildContext context) async {
-    try {
-      if (email.isEmpty) {
-        _errorMessage = "Please enter your email address.";
-        notifyListeners();
-        return;
-      }
-
-      _isLoading = true;
+    if (email.isEmpty) {
+      _errorMessage = "Please enter your email address.";
       notifyListeners();
+      return;
+    }
 
-      // Check if the email exists in the admin collection
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      // Check if the email exists in admin collection
       final querySnapshot = await _firestore
           .collection('admin')
           .where('email', isEqualTo: email)
@@ -107,32 +111,30 @@ class AuthController with ChangeNotifier {
       if (querySnapshot.docs.isEmpty) {
         _errorMessage = "No admin found with this email address.";
         notifyListeners();
-        _isLoading = false;
         return;
       }
 
-      // Send password reset email
+      // Send reset email
       await _auth.sendPasswordResetEmail(email: email);
 
-      _errorMessage = null; // Clear any previous error messages
+      _errorMessage = null;
+      notifyListeners();
 
-      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Password reset email sent to $email")),
+        SnackBar(
+          content: Text("Password reset email sent to $email"),
+          backgroundColor: Colors.green,
+        ),
       );
     } on FirebaseAuthException catch (e) {
-      // Handle Firebase errors
-      if (e.code == 'user-not-found') {
-        _errorMessage = "No user found with this email address.";
-      } else if (e.code == 'invalid-email') {
-        _errorMessage = "The email address is not valid.";
+      if (e.code == 'user-not-found' || e.code == 'invalid-email') {
+        _errorMessage = "Invalid or unregistered email address.";
       } else {
-        _errorMessage = e.message;
+        _errorMessage = "Password reset failed. Please try again.";
       }
       notifyListeners();
-    } catch (e) {
-      // Handle other errors
-      _errorMessage = e.toString();
+    } catch (_) {
+      _errorMessage = "Something went wrong. Please try again.";
       notifyListeners();
     } finally {
       _isLoading = false;
@@ -140,39 +142,40 @@ class AuthController with ChangeNotifier {
     }
   }
 
-  // Method to sign out the user
+  // Signs out the current admin.
   Future<void> signOut() async {
     await _auth.signOut();
     _admin = null;
     notifyListeners();
   }
 
-  // Clear error messages
+  // Clears any existing error messages.
   void clearErrorMessage() {
     _errorMessage = null;
     notifyListeners();
   }
 
-  // Method to update the current page
+  // Sets the current page for navigation control.
   void setPage(String pageName) {
     if (_currentPage != pageName) {
       _currentPage = pageName;
-      notifyListeners(); // Trigger rebuild only when needed
+      notifyListeners();
     }
   }
 
+  // Returns total number of users from Firestore.
   Future<int> getAllUsers() async {
     try {
       final snapshot = await _firestore.collection('user').get();
       return snapshot.size;
-    } catch (e) {
-      return -1; // Use -1 to indicate error
+    } catch (_) {
+      return -1; // Indicates error
     }
   }
 
+  // Disposes controllers when no longer needed.
   @override
   void dispose() {
-    // Dispose controllers when they are no longer needed
     emailController.dispose();
     passwordController.dispose();
     super.dispose();

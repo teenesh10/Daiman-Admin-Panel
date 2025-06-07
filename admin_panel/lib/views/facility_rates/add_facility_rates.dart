@@ -5,8 +5,7 @@ import 'package:admin_panel/models/fee.dart';
 import 'package:admin_panel/controllers/manage_fee_controller.dart';
 
 class AddFacilityRatePage extends StatefulWidget {
-  final String
-      selectedFacilityID; // Facility ID passed from View Facility Rates
+  final String selectedFacilityID;
 
   const AddFacilityRatePage({super.key, required this.selectedFacilityID});
 
@@ -38,12 +37,28 @@ class _AddFacilityRatePageState extends State<AddFacilityRatePage> {
         description: _description,
       );
 
-      _controller.addFee(newFee);
-
-      Navigator.pop(context, newFee);
+      _controller.addFee(newFee).then((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Facility rate added successfully.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pop(context, newFee);
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error adding facility rate: $error'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all required fields.')),
+        const SnackBar(
+          content: Text('Please fill all required fields.'),
+          backgroundColor: Colors.orange,
+        ),
       );
     }
   }

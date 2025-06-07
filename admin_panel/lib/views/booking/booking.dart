@@ -86,7 +86,7 @@ class _ManageBookingViewState extends State<ManageBookingView> {
 
                       return SfCalendar(
                         view: CalendarView.month,
-                        allowedViews: null, 
+                        allowedViews: null,
                         showNavigationArrow: true,
                         showDatePickerButton: true,
                         dataSource: BookingDataSource(filtered),
@@ -96,7 +96,8 @@ class _ManageBookingViewState extends State<ManageBookingView> {
                         ),
                         todayHighlightColor: Theme.of(context).primaryColor,
                         selectionDecoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor.withOpacity(0.3),
+                          color:
+                              Theme.of(context).primaryColor.withOpacity(0.3),
                           shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.circular(4),
                         ),
@@ -113,6 +114,7 @@ class _ManageBookingViewState extends State<ManageBookingView> {
                                 const SnackBar(
                                   content:
                                       Text("Please select a facility first."),
+                                  backgroundColor: Colors.orange,
                                 ),
                               );
                               return;
@@ -145,8 +147,8 @@ class _ManageBookingViewState extends State<ManageBookingView> {
                                       onPressed: () =>
                                           Navigator.of(context).pop(),
                                       style: TextButton.styleFrom(
-                                        foregroundColor: Theme.of(context)
-                                            .primaryColor, 
+                                        foregroundColor:
+                                            Theme.of(context).primaryColor,
                                       ),
                                       child: const Text("Close"),
                                     ),

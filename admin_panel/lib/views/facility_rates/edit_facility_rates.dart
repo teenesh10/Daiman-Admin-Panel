@@ -49,17 +49,26 @@ class _EditFacilityRatePageState extends State<EditFacilityRatePage> {
 
       _controller.updateFee(updatedFee).then((_) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Facility rate updated successfully.')),
+          const SnackBar(
+            content: Text('Facility rate updated successfully.'),
+            backgroundColor: Colors.green,
+          ),
         );
         Navigator.pop(context, updatedFee);
       }).catchError((error) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error updating facility rate: $error')),
+          SnackBar(
+            content: Text('Error updating facility rate: $error'),
+            backgroundColor: Colors.red,
+          ),
         );
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all required fields.')),
+        const SnackBar(
+          content: Text('Please fill all required fields.'),
+          backgroundColor: Colors.orange,
+        ),
       );
     }
   }

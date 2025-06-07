@@ -4,7 +4,7 @@ class Court {
   final String courtID;
   final String courtName;
   final String description;
-  final bool availability; // true if available, false if booked
+  final bool availability; 
 
   Court({
     required this.courtID,

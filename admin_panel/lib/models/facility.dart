@@ -13,7 +13,6 @@ class Facility {
     required this.description,
   });
 
-  // Convert a Firebase DocumentSnapshot into a Facility object
   factory Facility.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Facility(
@@ -24,7 +23,6 @@ class Facility {
     );
   }
 
-  // Convert a Facility object into a map for Firebase
   Map<String, dynamic> toFirestore() {
     return {
       'facilityName': facilityName,

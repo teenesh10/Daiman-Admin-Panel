@@ -44,7 +44,7 @@ exports.sendEmailResponse = onRequest(
 
     try {
       await transporter.sendMail({
-        from: `"Daiman Sri Skudai" <${gmailEmail}>`,
+        from: `"Daiman Sri Skudai" <${gmailEmail.value()}>`,
         to: email,
         subject: "Response to your report",
         html: `<p>${message.replace(/\n/g, "<br>")}</p>`,

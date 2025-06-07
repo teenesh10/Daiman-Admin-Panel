@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Payment {
-  final String paymentID; // Document ID (auto-generated in subcollection)
-  final String paymentMethod; // Payment method (e.g., card, Stripe)
-  final double amount; // Payment amount
-  final bool isSuccessful; // Payment status
-  final DateTime paymentDate; // Payment date
+  final String paymentID; 
+  final String paymentMethod; 
+  final double amount; 
+  final bool isSuccessful; 
+  final DateTime paymentDate; 
 
   Payment({
     required this.paymentID,
@@ -15,7 +15,6 @@ class Payment {
     required this.paymentDate,
   });
 
-  // Convert Firestore document to Payment object
   factory Payment.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
 
@@ -28,7 +27,6 @@ class Payment {
     );
   }
 
-  // Convert Payment object to a map for Firestore
   Map<String, dynamic> toFirestore() {
     return {
       'paymentMethod': paymentMethod,
