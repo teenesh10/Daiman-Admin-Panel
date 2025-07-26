@@ -4,8 +4,6 @@ This is the **admin web dashboard** for **Daiman Sri Skudai Sport Centre**, buil
 
 ---
 
-## 🔗 Live Demo
-
 🌐 **Live Website**: (https://fyp-daiman.web.app/)
 ---
 
