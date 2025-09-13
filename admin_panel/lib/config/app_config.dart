@@ -2,11 +2,11 @@
 
 class AppConfig {
   // Default values for development (these should be replaced with environment variables in production)
-  static const String _defaultApiKey = "AIzaSyDVsO30_Q_pOHrD4F0BHBBb_yTuk31oByI";
-  static const String _defaultProjectId = "fyp-daiman";
-  static const String _defaultMessagingSenderId = "95968883140";
-  static const String _defaultAppId = "1:95968883140:web:2aed2205203908b3f3b491";
-  static const String _defaultFunctionsUrl = "https://us-central1-fyp-daiman.cloudfunctions.net";
+  static const String _defaultApiKey = "your_firebase_api_key_here";
+  static const String _defaultProjectId = "your_firebase_project_id_here";
+  static const String _defaultMessagingSenderId = "your_messaging_sender_id_here";
+  static const String _defaultAppId = "your_firebase_app_id_here";
+  static const String _defaultFunctionsUrl = "your_firebase_functions_url_here";
   
   // Firebase Configuration
   static String get firebaseApiKey {
