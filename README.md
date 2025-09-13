@@ -41,19 +41,3 @@ It connects seamlessly with the **Flutter mobile app** used by customers for boo
 - 📊 Usage stats 
 - 🔒 Secured login with Firebase Authentication
 
----
-
-## 🚀 How to Run Locally
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/teenesh10/Daiman-Admin-Panel.git
-   cd admin-panel
-
-2. Install dependencies:
-   flutter pub get
-
-3. Run the app:
-   flutter run -d chrome
-
-4. (Ensure Firebase and Stripe credentials are correctly configured in your environment)
