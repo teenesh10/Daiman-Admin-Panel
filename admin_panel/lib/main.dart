@@ -1,3 +1,4 @@
+import 'package:admin_panel/config/app_config.dart';
 import 'package:admin_panel/constants.dart';
 import 'package:admin_panel/controllers/auth_controller.dart';
 import 'package:admin_panel/views/auth/login.dart';
@@ -17,11 +18,11 @@ import 'package:google_fonts/google_fonts.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-      options: const FirebaseOptions(
-    apiKey: "AIzaSyDVsO30_Q_pOHrD4F0BHBBb_yTuk31oByI",
-    projectId: "fyp-daiman",
-    messagingSenderId: "95968883140",
-    appId: "1:95968883140:web:2aed2205203908b3f3b491",
+      options: FirebaseOptions(
+    apiKey: AppConfig.firebaseApiKey,
+    projectId: AppConfig.firebaseProjectId,
+    messagingSenderId: AppConfig.firebaseMessagingSenderId,
+    appId: AppConfig.firebaseAppId,
   ));
   runApp(const MyApp());
 }

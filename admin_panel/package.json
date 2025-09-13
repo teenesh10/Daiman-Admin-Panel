@@ -1,6 +1,19 @@
 {
+  "name": "daiman-admin-panel",
+  "version": "1.0.0",
+  "description": "Daiman Admin Panel - Final Year Project",
+  "scripts": {
+    "build:dev": "flutter build web --dart-define=ENVIRONMENT=development",
+    "build:prod": "flutter build web --release --dart-define=ENVIRONMENT=production",
+    "deploy:functions": "cd functions && npm install && firebase deploy --only functions",
+    "deploy:hosting": "flutter build web --release && firebase deploy --only hosting",
+    "deploy:all": "npm run deploy:functions && npm run deploy:hosting"
+  },
   "dependencies": {
     "firebase": "^10.12.5",
     "nodemailer": "^7.0.2"
+  },
+  "devDependencies": {
+    "firebase-tools": "^13.0.0"
   }
 }

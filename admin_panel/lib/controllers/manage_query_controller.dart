@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:admin_panel/config/app_config.dart';
 
 class ManageQueryController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -51,7 +52,7 @@ class ManageQueryController {
       final idToken = await user.getIdToken(true);
 
       final response = await http.post(
-        Uri.parse('https://sendemailresponse-d7u4qgi7fa-uc.a.run.app'),
+        Uri.parse('${AppConfig.firebaseFunctionsUrl}/sendEmailResponse'),
         headers: {
           'Authorization': 'Bearer $idToken',
           'Content-Type': 'application/json',

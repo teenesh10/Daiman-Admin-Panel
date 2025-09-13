@@ -104,6 +104,31 @@ class LoginView extends StatelessWidget {
                         : const Text('Login'),
                   ),
                   const SizedBox(height: 16.0),
+                  
+                  // Demo Mode Button
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(bottom: 8.0),
+                    child: ElevatedButton(
+                      onPressed: authController.isLoading
+                          ? null
+                          : () {
+                              // Demo mode - navigate to dashboard without authentication
+                              Navigator.pushNamedAndRemoveUntil(
+                                context, 
+                                '/dashboard', 
+                                (route) => false
+                              );
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(double.infinity, 50),
+                      ),
+                      child: const Text('Demo Mode'),
+                    ),
+                  ),
+                  
                   TextButton(
                     onPressed: authController.isLoading
                         ? null

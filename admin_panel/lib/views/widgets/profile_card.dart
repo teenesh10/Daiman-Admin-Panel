@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_web_libraries_in_flutter
 
 import 'dart:html' as html;
+import 'package:admin_panel/config/app_config.dart';
 import 'package:admin_panel/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
 import '../../../constants.dart';
@@ -87,27 +88,32 @@ class ProfileCard extends StatelessWidget {
               if (value == 'logout') {
                 _showLogoutDialog(context);
               } else if (value == 'stripe_dashboard') {
-                const url = 'https://dashboard.stripe.com/test/dashboard';
-                html.window.open(url, '_blank');
+                // Only open Stripe dashboard in development mode
+                if (AppConfig.isDevelopment) {
+                  const url = 'https://dashboard.stripe.com/test/dashboard';
+                  html.window.open(url, '_blank');
+                }
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem<String>(
-                value: 'stripe_dashboard',
-                child: Row(
-                  children: [
-                    Icon(Icons.open_in_new, color: primaryColor),
-                    SizedBox(width: 10),
-                    Text(
-                      'Stripe Dashboard',
-                      style: TextStyle(
-                        color: primaryColor,
-                        fontWeight: FontWeight.w500,
+              // Only show Stripe dashboard in development
+              if (AppConfig.isDevelopment)
+                const PopupMenuItem<String>(
+                  value: 'stripe_dashboard',
+                  child: Row(
+                    children: [
+                      Icon(Icons.open_in_new, color: primaryColor),
+                      SizedBox(width: 10),
+                      Text(
+                        'Stripe Dashboard',
+                        style: TextStyle(
+                          color: primaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
               const PopupMenuItem<String>(
                 value: 'logout',
                 child: Row(
